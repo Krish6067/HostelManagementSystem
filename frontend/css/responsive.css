@@ -1,0 +1,113 @@
+/* RESPONSIVE DESIGN */
+
+/* Mobile (320px - 480px) and Tablet (481px - 1024px) */
+@media screen and (max-width: 1024px) {
+    /* Sidebar adjustments */
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0,0,0,0.3);
+        backdrop-filter: blur(2px);
+        z-index: 45;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity var(--transition-fast);
+    }
+    
+    .sidebar-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    /* Layout adjustments */
+    .grid-2-col {
+        grid-template-columns: 1fr;
+    }
+
+    /* Dashboard adjustments */
+    .dashboard-content {
+        padding: var(--spacing-md);
+    }
+}
+
+@media screen and (max-width: 480px) {
+    /* Mobile specific adjustments */
+    .grid-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-card {
+        padding: var(--spacing-sm);
+    }
+
+    .header-right {
+        gap: var(--spacing-sm);
+    }
+
+    .header-title {
+        font-size: var(--font-size-base);
+    }
+    
+    /* Responsive forms */
+    .form-group {
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .modal {
+        width: 95%;
+        padding: 0;
+    }
+    
+    .modal-body {
+        padding: var(--spacing-md);
+    }
+    
+    .btn {
+        width: 100%;
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .btn:last-child {
+        margin-bottom: 0;
+    }
+    
+    /* Make buttons stack in footer */
+    .modal-footer {
+        flex-direction: column;
+    }
+
+    /* Cards stack vertically */
+    .glass-panel {
+        padding: var(--spacing-md);
+    }
+
+    /* Notification panel fix */
+    .notification-panel {
+        position: fixed;
+        top: var(--header-height);
+        left: 5%;
+        right: 5%;
+        width: 90%;
+        margin: 0;
+    }
+}

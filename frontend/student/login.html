@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login - Hostel Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <style>
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-md);
+            background: var(--color-background);
+        }
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+        .login-header .icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-sm);
+        }
+        .login-header h2 {
+            margin-bottom: var(--spacing-xs);
+        }
+        .login-header p {
+            color: var(--color-text-muted);
+            margin-bottom: 0;
+        }
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+            font-size: var(--font-size-sm);
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: var(--spacing-lg);
+            font-size: var(--font-size-sm);
+            color: var(--color-text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-container glass-panel">
+            <div class="login-header">
+                <svg class="icon" style="width: 56px; height: 56px; margin: 0 auto 1rem auto; display: block; color: var(--color-primary);" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" /></svg>
+                <h2>Student Login</h2>
+                <p>Enter your credentials to continue</p>
+            </div>
+            
+            <form action="dashboard.html" method="GET">
+                <div class="form-group">
+                    <label class="form-label">Student ID / Email</label>
+                    <input type="text" class="form-control" placeholder="Enter your ID" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" placeholder="Enter your password" required>
+                </div>
+                
+                <div class="form-options">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox"> Remember me
+                    </label>
+                    <a href="#">Forgot password?</a>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block">Login</button>
+            </form>
+            
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </div>
+    </div>
+    <script src="../js/auth-client.js"></script>
+</body>
+</html>
+

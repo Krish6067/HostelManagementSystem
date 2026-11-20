@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Login - Hostel Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <style>
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-md);
+            background: var(--color-background);
+        }
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+        .login-header .icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-sm);
+        }
+        .login-header h2 {
+            margin-bottom: var(--spacing-xs);
+        }
+        .login-header p {
+            color: var(--color-text-muted);
+            margin-bottom: 0;
+        }
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+            font-size: var(--font-size-sm);
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: var(--spacing-lg);
+            font-size: var(--font-size-sm);
+            color: var(--color-text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-container glass-panel">
+            <div class="login-header">
+                <svg class="icon" style="width: 56px; height: 56px; margin: 0 auto 1rem auto; display: block; color: var(--color-primary);" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>
+                <h2>Security Login</h2>
+                <p>Enter your credentials to continue</p>
+            </div>
+            
+            <form action="dashboard.html" method="GET">
+                <div class="form-group">
+                    <label class="form-label">Security ID / Email</label>
+                    <input type="text" class="form-control" placeholder="Enter your ID" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" placeholder="Enter your password" required>
+                </div>
+                
+                <div class="form-options">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox"> Remember me
+                    </label>
+                    <a href="#">Forgot password?</a>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block">Login</button>
+            </form>
+            
+            <a href="../index.html" class="back-link">← Back to Home</a>
+        </div>
+    </div>
+    <script src="../js/auth-client.js"></script>
+</body>
+</html>
+

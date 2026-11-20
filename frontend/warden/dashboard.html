@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warden Dashboard - Hostel Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+<div class="app-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-brand"><span>🏢</span> <span>Hostel System</span></div>
+        </div>
+        <div class="sidebar-nav">
+            <a href="#" class="nav-item active" data-section="dashboard"><span>📊</span> Dashboard</a>
+            <a href="#" class="nav-item" data-section="outpasses"><span>📋</span> Outpasses</a>
+            <a href="#" class="nav-item" data-section="students"><span>👨‍🎓</span> Students</a>
+            <a href="#" class="nav-item" data-section="latereturns"><span>⚠️</span> Late Returns</a>
+            <a href="#" class="nav-item" data-section="complaints"><span>📝</span> Complaints</a>
+            <a href="#" class="nav-item" data-section="notices"><span>📌</span> Notices</a>
+            <a href="#" class="nav-item" data-section="profile"><span>👤</span> Profile</a>
+            <a href="#" class="nav-item" data-section="settings"><span>⚙️</span> Settings</a>
+        </div>
+        <div class="sidebar-footer">
+            <a href="../index.html" class="nav-item" style="color:var(--color-danger)"><span>🚪</span> Logout</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header">
+            <div class="header-left">
+                <button class="menu-toggle" id="menu-toggle">☰</button>
+                <div class="header-title">Warden Portal</div>
+            </div>
+            <div class="header-right">
+                <div class="notification-icon-wrapper" id="notification-toggle">
+                    <span style="font-size:1.25rem">🔔</span>
+                    <div class="notification-badge" id="notifBadge"></div>
+                    <div class="notification-panel glass-panel" id="notification-panel">
+                        <div class="notification-header">Notifications</div>
+                        <div class="notification-list" id="notifList"></div>
+                    </div>
+                </div>
+                <div class="user-profile-sm">
+                    <div class="avatar" id="headerAvatar">WA</div>
+                    <span id="headerName">Dr. A. K. Singh</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- DASHBOARD -->
+        <div id="section-dashboard" class="section-content dashboard-content">
+            <div class="dashboard-header">
+                <h2>Welcome, <span id="welcomeName">Dr. Singh</span> 👋</h2>
+                <p>Manage hostel operations and approve outpasses.</p>
+            </div>
+            <div class="grid-cards">
+                <div class="glass-card stat-card">
+                    <div class="stat-icon" style="background-color:var(--color-info-light);color:var(--color-info)">📋</div>
+                    <div class="stat-content"><h4>Total Requests</h4><div class="stat-value" id="statTotal">0</div></div>
+                </div>
+                <div class="glass-card stat-card">
+                    <div class="stat-icon" style="background-color:var(--color-warning-light);color:var(--color-warning)">⏳</div>
+                    <div class="stat-content"><h4>Ready for Review</h4><div class="stat-value" id="statReady">0</div></div>
+                </div>
+                <div class="glass-card stat-card">
+                    <div class="stat-icon" style="background-color:var(--color-success-light);color:var(--color-success)">✓</div>
+                    <div class="stat-content"><h4>Active Outpasses</h4><div class="stat-value" id="statActive">0</div></div>
+                </div>
+            </div>
+            <div class="glass-panel">
+                <h3>Outpass Requests</h3>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead><tr><th>Student</th><th>Destination</th><th>Departure</th><th>Parent Status</th><th>Warden Action</th></tr></thead>
+                        <tbody id="outpassTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- OUTPASSES -->
+        <div id="section-outpasses" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header" style="display:flex;justify-content:space-between;align-items:center">
+                <div><h2>All Outpasses</h2><p>Full outpass management with filtering.</p></div>
+                <select class="form-control" id="outpassFilter" style="width:auto" onchange="loadFullOutpasses()">
+                    <option value="ALL">All Requests</option>
+                    <option value="PENDING_PARENT">Pending Parent</option>
+                    <option value="PENDING_WARDEN">Pending Warden</option>
+                    <option value="ACTIVE">Active</option>
+                    <option value="COMPLETED">Completed</option>
+                    <option value="REJECTED">Rejected</option>
+                </select>
+            </div>
+            <div class="glass-panel">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead><tr><th>Student</th><th>Destination</th><th>Type</th><th>Departure</th><th>Parent</th><th>Warden Action</th></tr></thead>
+                        <tbody id="outpassFullBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- STUDENTS -->
+        <div id="section-students" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header"><h2>Students</h2><p>All students under your hostel management.</p></div>
+            <div class="glass-panel">
+                <div style="margin-bottom:var(--spacing-md)">
+                    <input type="text" class="form-control" id="studentSearch" placeholder="Search by name or ID..." oninput="filterStudents()" style="max-width:400px">
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead><tr><th>Name</th><th>Student ID</th><th>Course</th><th>Year</th><th>Hostel</th><th>Room</th></tr></thead>
+                        <tbody id="studentsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- LATE RETURNS -->
+        <div id="section-latereturns" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header"><h2>Late Returns</h2><p>Students who returned late from outpass.</p></div>
+            <div class="glass-panel">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead><tr><th>Student</th><th>Outpass ID</th><th>Expected Return</th><th>Actual Return</th><th>Status</th></tr></thead>
+                        <tbody id="lateReturnsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPLAINTS -->
+        <div id="section-complaints" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header"><h2>Complaints</h2><p>Student complaints requiring attention.</p></div>
+            <div class="glass-panel">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead><tr><th>ID</th><th>Student</th><th>Title</th><th>Description</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+                        <tbody id="complaintsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- NOTICES -->
+        <div id="section-notices" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header" style="display:flex;justify-content:space-between;align-items:center">
+                <div><h2>Notices</h2><p>Post and manage hostel notices.</p></div>
+                <button class="btn btn-primary" onclick="openModal('newNoticeModal')">+ Post Notice</button>
+            </div>
+            <div id="noticesContainer" style="display:grid;gap:var(--spacing-md)"></div>
+        </div>
+
+        <!-- PROFILE -->
+        <div id="section-profile" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header"><h2>My Profile</h2><p>Your account information.</p></div>
+            <div style="max-width:600px">
+                <div class="glass-panel">
+                    <div style="display:flex;align-items:center;gap:var(--spacing-lg);margin-bottom:var(--spacing-xl)">
+                        <div class="avatar" style="width:80px;height:80px;font-size:2rem" id="profileAvatar">WA</div>
+                        <div><h3 id="profileName" style="margin-bottom:0.25rem">Dr. A. K. Singh</h3><p style="margin:0;color:var(--color-text-muted)" id="profileId">WAR001</p></div>
+                    </div>
+                    <p><strong>Name:</strong> <span id="pProfName">Dr. A. K. Singh</span></p>
+                    <p><strong>Warden ID:</strong> <span id="pProfId">WAR001</span></p>
+                    <p><strong>Hostel:</strong> <span id="pProfHostel">Boys Hostel - 2</span></p>
+                    <hr style="border:0;border-top:1px solid rgba(0,0,0,0.1);margin:var(--spacing-md) 0">
+                    <p>Profile information is read-only. Contact the administrator to correct official details.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div id="section-settings" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header"><h2>Settings</h2><p>Manage preferences and account security.</p></div>
+            <div class="grid-2-col">
+                <div class="glass-panel">
+                    <h3>Notification Preferences</h3>
+                    <div style="margin-top:var(--spacing-md);display:flex;flex-direction:column;gap:var(--spacing-md)">
+                        <label style="display:flex;align-items:center;gap:var(--spacing-sm);cursor:pointer"><input type="checkbox" checked style="width:16px;height:16px"> Outpass Approval Alerts</label>
+                        <label style="display:flex;align-items:center;gap:var(--spacing-sm);cursor:pointer"><input type="checkbox" checked style="width:16px;height:16px"> Late Return Notifications</label>
+                        <label style="display:flex;align-items:center;gap:var(--spacing-sm);cursor:pointer"><input type="checkbox" checked style="width:16px;height:16px"> New Complaint Alerts</label>
+                        <label style="display:flex;align-items:center;gap:var(--spacing-sm);cursor:pointer"><input type="checkbox" style="width:16px;height:16px"> Email Notifications</label>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top:var(--spacing-lg)" onclick="alert('Preferences saved!')">Save Preferences</button>
+                </div>
+                <div class="glass-panel">
+                    <h3>Account Security</h3>
+                    <p>Keep your account secure.</p>
+                    <button class="btn btn-secondary" onclick="alert('Password change coming soon.')">Change Password</button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Review Modal -->
+<div class="modal-backdrop" id="wardenReviewModal">
+    <div class="modal">
+        <div class="modal-header"><h3>Review Outpass Request</h3><button class="modal-close">&times;</button></div>
+        <div class="modal-body">
+            <div id="reviewContent" style="margin-bottom:var(--spacing-md)"></div>
+            <div id="rejectSection" style="display:none;margin-top:var(--spacing-md);border-top:1px solid var(--color-border);padding-top:var(--spacing-md)">
+                <div class="form-group">
+                    <label class="form-label" style="color:var(--color-danger)">Reason for rejection</label>
+                    <textarea class="form-control" id="rejectReason" placeholder="Please provide a reason..."></textarea>
+                </div>
+                <div style="display:flex;gap:var(--spacing-sm)">
+                    <button class="btn btn-secondary" style="flex:1" onclick="hideRejectSection()">Cancel</button>
+                    <button class="btn btn-danger" style="flex:1" onclick="confirmReject()">Confirm Reject</button>
+                </div>
+            </div>
+            <div id="actionButtons" style="display:flex;gap:var(--spacing-sm);margin-top:var(--spacing-md)">
+                <button class="btn btn-danger" style="flex:1" onclick="showRejectSection()">✕ Reject</button>
+                <button class="btn btn-primary" style="flex:1" onclick="confirmApprove()">✓ Approve</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- New Notice Modal -->
+<div class="modal-backdrop" id="newNoticeModal">
+    <div class="modal">
+        <div class="modal-header"><h3>Post New Notice</h3><button class="modal-close">&times;</button></div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label">Title</label>
+                <input type="text" class="form-control" id="noticeTitle" placeholder="Notice title">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Content</label>
+                <textarea class="form-control" id="noticeContent" rows="4" placeholder="Notice details..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('newNoticeModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitNotice()">Post Notice</button>
+        </div>
+    </div>
+</div>
+
+<script src="../js/auth-guard.js"></script>
+<script src="../js/demo-data.js"></script>
+<script src="../js/outpass.js"></script>
+<script src="../js/sections.js"></script>
+<script src="../js/main.js"></script>
+<script>
+    const wardenId = window.HMS_AUTH_USER?.id || 'WAR001';
+    let currentReviewId = null;
+    let allStudents = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadWardenData();
+        loadOutpasses();
+        loadNotifications();
+        initSections(sectionId => {
+            if (sectionId === 'outpasses') loadFullOutpasses();
+            if (sectionId === 'students') loadStudentsList();
+            if (sectionId === 'latereturns') loadLateReturns();
+            if (sectionId === 'complaints') loadComplaints();
+            if (sectionId === 'notices') loadNotices();
+        });
+    });
+
+    function loadWardenData() {
+        const db = window.HMS_DB.get();
+        const warden = db.wardens.find(w => w.id === wardenId);
+        if (!warden) return;
+        document.getElementById('headerName').textContent = warden.name;
+        document.getElementById('welcomeName').textContent = warden.name;
+        const initials = warden.name.split(' ').map(n => n[0]).join('').replace('.','').substring(0,2);
+        document.getElementById('headerAvatar').textContent = initials;
+        document.getElementById('profileAvatar').textContent = initials;
+        document.getElementById('profileName').textContent = warden.name;
+        document.getElementById('profileId').textContent = warden.id;
+        document.getElementById('pProfName').textContent = warden.name;
+        document.getElementById('pProfId').textContent = warden.id;
+        document.getElementById('pProfHostel').textContent = warden.hostel;
+    }
+
+    function buildOutpassRows(outpasses, db, bodyId, showReview) {
+        const tbody = document.getElementById(bodyId);
+        tbody.innerHTML = '';
+        let total = outpasses.length, readyForReview = 0, activeOutpasses = 0;
+        outpasses.forEach(op => {
+            const student = db.students.find(s => s.id === op.studentId);
+            const state = calculateOutpassState(op);
+            if (state.status === 'PENDING_WARDEN') readyForReview++;
+            if (state.status === 'ACTIVE') activeOutpasses++;
+            let parentBadge = op.parentStatus === 'APPROVED' ? 'badge-success' : op.parentStatus === 'REJECTED' ? 'badge-danger' : 'badge-warning';
+            let actionHtml = '';
+            if (state.wardenLock) {
+                if (state.status === 'PARENT_REJECTED') actionHtml = `<span style="color:var(--color-danger);font-size:0.875rem">✕ Rejected by Parent</span>`;
+                else if (state.status === 'PENDING_PARENT') actionHtml = `<button class="btn btn-secondary btn-sm" disabled style="opacity:0.6" title="Waiting for Parent">🔒 Waiting for Parent</button>`;
+                else actionHtml = `<span class="badge badge-info">${state.display}</span>`;
+            } else if (state.status === 'PENDING_WARDEN') {
+                actionHtml = `<button class="btn btn-primary btn-sm" onclick="openReviewModal('${op.id}')">Review Request</button>`;
+            } else {
+                actionHtml = `<span class="badge ${state.status.includes('REJECTED') ? 'badge-danger' : 'badge-success'}">${state.display}</span>`;
+            }
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><strong>${student ? student.name : op.studentId}</strong><br><span style="font-size:0.75rem;color:var(--color-text-muted)">Room: ${student ? student.room : 'N/A'}</span></td>
+                <td><strong>${op.destination}</strong><br><span style="font-size:0.75rem">${op.type}</span></td>
+                ${showReview ? '' : `<td>${op.type}</td>`}
+                <td>${formatDate(op.departureDate)}</td>
+                <td><span class="badge ${parentBadge}">${op.parentStatus}</span></td>
+                <td>${actionHtml}</td>`;
+            tbody.appendChild(tr);
+        });
+        return { total, readyForReview, activeOutpasses };
+    }
+
+    function loadOutpasses() {
+        const db = window.HMS_DB.get();
+        const outpasses = [...db.outpasses].reverse();
+        const { total, readyForReview, activeOutpasses } = buildOutpassRows(outpasses, db, 'outpassTableBody', true);
+        document.getElementById('statTotal').textContent = total;
+        document.getElementById('statReady').textContent = readyForReview;
+        document.getElementById('statActive').textContent = activeOutpasses;
+    }
+
+    function loadFullOutpasses() {
+        const db = window.HMS_DB.get();
+        const filter = document.getElementById('outpassFilter') ? document.getElementById('outpassFilter').value : 'ALL';
+        let outpasses = [...db.outpasses].reverse();
+        if (filter !== 'ALL') outpasses = outpasses.filter(op => {
+            const state = calculateOutpassState(op);
+            if (filter === 'REJECTED') return state.status.includes('REJECTED');
+            return state.status === filter;
+        });
+        buildOutpassRows(outpasses, db, 'outpassFullBody', false);
+    }
+
+    function loadStudentsList() {
+        const db = window.HMS_DB.get();
+        allStudents = db.students;
+        renderStudents(allStudents);
+    }
+
+    function renderStudents(students) {
+        const tbody = document.getElementById('studentsTableBody');
+        tbody.innerHTML = '';
+        if (students.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--color-text-muted)">No students found.</td></tr>'; return; }
+        students.forEach(s => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td><strong>${s.name}</strong></td><td>${s.id}</td><td>${s.course}</td><td>${s.year}</td><td>${s.hostel}</td><td>${s.room}</td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function filterStudents() {
+        const q = document.getElementById('studentSearch').value.toLowerCase();
+        renderStudents(allStudents.filter(s => s.name.toLowerCase().includes(q) || s.id.toLowerCase().includes(q)));
+    }
+
+    function loadLateReturns() {
+        const db = window.HMS_DB.get();
+        const lateOps = db.outpasses.filter(o => o.lateReturn);
+        const tbody = document.getElementById('lateReturnsBody');
+        tbody.innerHTML = '';
+        if (lateOps.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--color-text-muted)">No late returns recorded.</td></tr>'; return; }
+        lateOps.forEach(op => {
+            const student = db.students.find(s => s.id === op.studentId);
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td><strong>${student ? student.name : op.studentId}</strong></td><td>${op.id}</td><td>${formatDate(op.returnDate)}</td><td>${formatDate(op.returnTime)}</td><td><span class="badge badge-danger">LATE</span></td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function loadComplaints() {
+        const db = window.HMS_DB.get();
+        const complaints = (db.complaints || []).reverse();
+        const tbody = document.getElementById('complaintsBody');
+        tbody.innerHTML = '';
+        if (complaints.length === 0) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--color-text-muted)">No complaints found.</td></tr>'; return; }
+        complaints.forEach(c => {
+            const student = db.students.find(s => s.id === c.userId);
+            let badgeClass = c.status === 'RESOLVED' ? 'badge-success' : 'badge-warning';
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${c.id}</td><td>${student ? student.name : c.userId}</td><td><strong>${c.title}</strong></td><td class="complaint-description">${c.category ? `<strong>${c.category}</strong><br>` : ''}${c.description}</td><td class="complaint-date">${formatDate(c.date)}</td><td><span class="badge ${badgeClass}">${c.status}</span></td><td>${c.status !== 'RESOLVED' ? `<button class="btn btn-primary btn-sm" onclick="resolveComplaint('${c.id}')">Resolve</button>` : ''}</td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function resolveComplaint(id) {
+        const db = window.HMS_DB.get();
+        const idx = (db.complaints || []).findIndex(c => c.id === id);
+        if (idx !== -1) { db.complaints[idx].status = 'RESOLVED'; window.HMS_DB.save(db); loadComplaints(); }
+    }
+
+    function loadNotices() {
+        const db = window.HMS_DB.get();
+        const notices = (db.notices || []).reverse();
+        const container = document.getElementById('noticesContainer');
+        if (!container) return;
+        if (notices.length === 0) { container.innerHTML = '<div class="glass-panel"><p>No notices posted yet.</p></div>'; return; }
+        container.innerHTML = notices.map(n => `
+            <div class="glass-panel">
+                <h3 style="color:var(--color-primary);margin-bottom:0.5rem">${n.title}</h3>
+                <p style="margin-bottom:0.5rem;color:var(--color-text-main)">${n.content}</p>
+                <small style="color:var(--color-text-muted)">📅 ${formatDate(n.date)}</small>
+            </div>`).join('');
+    }
+
+    function submitNotice() {
+        const title = document.getElementById('noticeTitle').value.trim();
+        const content = document.getElementById('noticeContent').value.trim();
+        if (!title || !content) { alert('Please fill all fields.'); return; }
+        const db = window.HMS_DB.get();
+        if (!db.notices) db.notices = [];
+        db.notices.push({ id: 'NOT' + Date.now(), title, content, date: new Date().toISOString() });
+        window.HMS_DB.save(db);
+        closeModal('newNoticeModal');
+        document.getElementById('noticeTitle').value = '';
+        document.getElementById('noticeContent').value = '';
+        loadNotices();
+        alert('Notice posted successfully!');
+    }
+
+    function openReviewModal(id) {
+        currentReviewId = id;
+        const db = window.HMS_DB.get();
+        const op = db.outpasses.find(o => o.id === id);
+        if (!op) {
+            currentReviewId = null;
+            alert('This outpass request is no longer available. Refresh the list and try again.');
+            return;
+        }
+        const student = (db.students || []).find(s => s.id === op.studentId);
+        const studentId = student?.id || op.studentId || 'Not available';
+        const studentName = student?.name || op.studentName || `Student ${studentId}`;
+        const room = student?.room || op.studentRoom || 'Not available';
+        const course = student?.course || op.course || 'Not available';
+        document.getElementById('reviewContent').innerHTML = `
+            <div style="background:var(--color-background);padding:var(--spacing-sm);border-radius:var(--radius-md);margin-bottom:var(--spacing-md)">
+                <p style="margin-bottom:0.25rem"><strong>Student:</strong> ${studentName} (${studentId})</p>
+                <p style="margin-bottom:0"><strong>Room:</strong> ${room} | <strong>Course:</strong> ${course}</p>
+            </div>
+            <p><strong>Destination:</strong> ${op.destination}</p>
+            <p><strong>Reason:</strong> ${op.reason}</p>
+            <p><strong>Departure:</strong> ${formatDate(op.departureDate)}</p>
+            <p><strong>Expected Return:</strong> ${formatDate(op.returnDate)}</p>
+            <div style="margin-top:var(--spacing-sm);border-top:1px solid rgba(0,0,0,0.1);padding-top:var(--spacing-sm)">
+                <p style="color:var(--color-success);margin-bottom:0">✓ Parent Approval Confirmed</p>
+            </div>`;
+        hideRejectSection();
+        openModal('wardenReviewModal');
+    }
+
+    function showRejectSection() {
+        document.getElementById('actionButtons').style.display = 'none';
+        document.getElementById('rejectSection').style.display = 'block';
+    }
+    function hideRejectSection() {
+        document.getElementById('actionButtons').style.display = 'flex';
+        document.getElementById('rejectSection').style.display = 'none';
+    }
+
+    function confirmApprove() {
+        const confirmButton = document.querySelector('#actionButtons .btn-primary');
+        if (confirmButton) confirmButton.disabled = true;
+        try {
+            if (wardenApproveOutpass(currentReviewId)) {
+                closeModal('wardenReviewModal');
+                loadOutpasses();
+                alert('Outpass approved. QR code is now available for the student.');
+            } else {
+                alert('This request is not ready for warden approval. Refresh the list and check the parent approval status.');
+            }
+        } catch (error) {
+            console.error('Unable to approve outpass:', error);
+            alert('The approval could not be saved. Please refresh and try again.');
+        } finally {
+            if (confirmButton) confirmButton.disabled = false;
+        }
+    }
+
+    function confirmReject() {
+        const reason = document.getElementById('rejectReason').value;
+        if (!reason) { alert('Please provide a reason.'); return; }
+        const db = window.HMS_DB.get();
+        const idx = db.outpasses.findIndex(o => o.id === currentReviewId);
+        if (idx !== -1) {
+            db.outpasses[idx].wardenStatus = 'REJECTED';
+            db.outpasses[idx].rejectionReason = reason;
+            db.outpasses[idx].finalStatus = 'REJECTED';
+            const student = (db.students || []).find(s => s.id === db.outpasses[idx].studentId);
+            db.notifications.push({ id: Date.now(), userId: db.outpasses[idx].studentId, title: 'Warden Rejected Outpass', message: `Your outpass was rejected. Reason: ${reason}`, date: new Date().toISOString(), read: false });
+            if (student) db.notifications.push({ id: Date.now() + 1, userId: student.parentId, title: 'Warden Rejected Outpass', message: `Warden rejected outpass for ${student.name}.`, date: new Date().toISOString(), read: false });
+            window.HMS_DB.save(db);
+            closeModal('wardenReviewModal');
+            loadOutpasses();
+            alert('Outpass request rejected.');
+        }
+    }
+
+    function loadNotifications() {
+        const db = window.HMS_DB.get();
+        const notifs = (db.notifications || []).filter(n => n.userId === wardenId).reverse();
+        const notifList = document.getElementById('notifList');
+        notifList.innerHTML = '';
+        let unreadCount = 0;
+        notifs.forEach(n => {
+            if (!n.read) unreadCount++;
+            const item = document.createElement('div');
+            item.className = 'notification-item';
+            item.innerHTML = `<strong style="color:${n.read ? 'inherit' : 'var(--color-primary)'}">${n.title}</strong><br>${n.message}<br><small style="color:var(--color-text-muted)">${formatDate(n.date)}</small>`;
+            notifList.appendChild(item);
+        });
+        const badge = document.getElementById('notifBadge');
+        if (unreadCount > 0) badge.style.display = 'block';
+        else { badge.style.display = 'none'; if (notifs.length === 0) notifList.innerHTML = '<div class="notification-item">No new notifications</div>'; }
+    }
+</script>
+</body>
+</html>

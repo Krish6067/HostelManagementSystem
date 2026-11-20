@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Dashboard - Hostel Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+<div class="app-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-brand"><span>🏢</span> <span>Hostel System</span></div>
+        </div>
+        <div class="sidebar-nav">
+            <a href="#" class="nav-item active" data-section="dashboard"><span>📊</span> Dashboard</a>
+            <a href="#" class="nav-item" data-section="mychild"><span>👨‍🎓</span> My Child</a>
+            <a href="#" class="nav-item" data-section="pending"><span>⏳</span> Pending Outpasses</a>
+            <a href="#" class="nav-item" data-section="history"><span>📋</span> Outpass History</a>
+            <a href="#" class="nav-item" data-section="profile"><span>👤</span> Profile</a>
+            <a href="#" class="nav-item" data-section="settings"><span>⚙️</span> Settings</a>
+        </div>
+        <div class="sidebar-footer">
+            <a href="../index.html" class="nav-item" style="color:var(--color-danger)"><span>🚪</span> Logout</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header">
+            <div class="header-left">
+                <button class="menu-toggle" id="menu-toggle">☰</button>
+                <div class="header-title">Parent Portal</div>
+            </div>
+            <div class="header-right">
+                <div class="notification-icon-wrapper" id="notification-toggle">
+                    <span style="font-size:1.25rem">🔔</span>
+                    <div class="notification-badge" id="notifBadge"></div>
+                    <div class="notification-panel glass-panel" id="notification-panel">
+                        <div class="notification-header">Notifications</div>
+                        <div class="notification-list" id="notifList"></div>
+                    </div>
+                </div>
+                <div class="user-profile-sm">
+                    <div class="avatar" id="headerAvatar">RS</div>
+                    <span id="headerName">Mr. Rajesh Sharma</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- DASHBOARD -->
+        <div id="section-dashboard" class="section-content dashboard-content">
+            <div class="dashboard-header">
+                <h2>Welcome, <span id="welcomeName">Mr. Rajesh</span> 👋</h2>
+                <p>Manage outpass requests for your child.</p>
+            </div>
+            <div class="grid-cards">
+                <div class="glass-card stat-card">
+                    <div class="stat-icon" style="background-color:var(--color-warning-light);color:var(--color-warning)">⏳</div>
+                    <div class="stat-content"><h4>Pending Approvals</h4><div class="stat-value" id="statPending">0</div></div>
+                </div>
+                <div class="glass-card stat-card">
+                    <div class="stat-icon" style="background-color:var(--color-success-light);color:var(--color-success)">✓</div>
+                    <div class="stat-content"><h4>Approved by You</h4><div class="stat-value" id="statApproved">0</div></div>
+                </div>
+            </div>
+            <div class="grid-2-col">
+                <div class="glass-panel">
+                    <h3>Action Required: Pending Outpasses</h3>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead><tr><th>Destination</th><th>Departure</th><th>Action</th></tr></thead>
+                            <tbody id="pendingTableBody"></tbody>
+                        </table>
+                    </div>
+                    <h3 style="margin-top:var(--spacing-xl)">Outpass History</h3>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead><tr><th>Destination</th><th>Date</th><th>Status</th></tr></thead>
+                            <tbody id="historyTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="glass-panel">
+                    <h3>Student Information</h3>
+                    <div style="margin-top:var(--spacing-md)">
+                        <p><strong>Student Name:</strong> <span id="profChildName">Rahul Sharma</span></p>
+                        <p><strong>Student ID:</strong> <span id="profChildId">STU20260045</span></p>
+                        <p><strong>Course:</strong> <span id="profChildCourse">B.Tech CSE</span></p>
+                        <p><strong>Year:</strong> <span id="profChildYear">2nd Year</span></p>
+                        <p><strong>Hostel:</strong> <span id="profChildHostel">Boys Hostel - 2</span></p>
+                        <p><strong>Room:</strong> <span id="profChildRoom">214</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MY CHILD -->
+        <div id="section-mychild" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header"><h2>My Child</h2><p>Detailed information about your child and their outpass activity.</p></div>
+            <div class="grid-2-col">
+                <div class="glass-panel">
+                    <h3>Student Profile</h3>
+                    <div style="display:flex;align-items:center;gap:var(--spacing-lg);margin:var(--spacing-lg) 0">
+                        <div class="avatar" style="width:70px;height:70px;font-size:1.75rem" id="childAvatar">RS</div>
+                        <div>
+                            <h3 id="childName" style="margin-bottom:0.25rem">Rahul Sharma</h3>
+                            <p style="margin:0;color:var(--color-text-muted)" id="childId">STU20260045</p>
+                        </div>
+                    </div>
+                    <p><strong>Course:</strong> <span id="childCourse">B.Tech CSE</span></p>
+                    <p><strong>Year:</strong> <span id="childYear">2nd Year</span></p>
+                    <p><strong>Hostel:</strong> <span id="childHostel">Boys Hostel - 2</span></p>
+                    <p><strong>Room No:</strong> <span id="childRoom">214</span></p>
+                    <p><strong>Room Type:</strong> <span id="childRoomType">Triple Sharing</span></p>
+                    <p><strong>Phone:</strong> <span id="childPhone">+91 9876543210</span></p>
+                </div>
+                <div class="glass-panel">
+                    <h3>Recent Outpass Activity</h3>
+                    <div id="childRecentOutpasses" style="display:flex;flex-direction:column;gap:var(--spacing-sm);margin-top:var(--spacing-md)"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PENDING OUTPASSES -->
+        <div id="section-pending" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header"><h2>Pending Outpasses</h2><p>Outpass requests awaiting your approval.</p></div>
+            <div id="pendingCardsContainer" style="display:grid;gap:var(--spacing-md)"></div>
+        </div>
+
+        <!-- OUTPASS HISTORY -->
+        <div id="section-history" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header" style="display:flex;justify-content:space-between;align-items:center">
+                <div><h2>Outpass History</h2><p>Complete record of all outpass requests.</p></div>
+                <select class="form-control" id="historyFilter" style="width:auto" onchange="loadHistorySection()">
+                    <option value="ALL">All</option>
+                    <option value="PENDING">Pending</option>
+                    <option value="APPROVED">Approved</option>
+                    <option value="REJECTED">Rejected</option>
+                    <option value="ACTIVE">Active</option>
+                    <option value="COMPLETED">Completed</option>
+                </select>
+            </div>
+            <div class="glass-panel">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead><tr><th>Destination</th><th>Type</th><th>Departure</th><th>Return</th><th>Status</th></tr></thead>
+                        <tbody id="fullHistoryBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROFILE -->
+        <div id="section-profile" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header"><h2>My Profile</h2><p>Your account information.</p></div>
+            <div style="max-width:600px">
+                <div class="glass-panel">
+                    <div style="display:flex;align-items:center;gap:var(--spacing-lg);margin-bottom:var(--spacing-xl)">
+                        <div class="avatar" style="width:80px;height:80px;font-size:2rem" id="profileAvatar">RS</div>
+                        <div><h3 id="profileName" style="margin-bottom:0.25rem">Mr. Rajesh Sharma</h3><p style="margin:0;color:var(--color-text-muted)" id="profileId">PAR20260045</p></div>
+                    </div>
+                    <p><strong>Full Name:</strong> <span id="pProfName">Mr. Rajesh Sharma</span></p>
+                    <p><strong>Parent ID:</strong> <span id="pProfId">PAR20260045</span></p>
+                    <p><strong>Phone:</strong> <span id="pProfPhone">+91 9123456789</span></p>
+                    <p><strong>Child Name:</strong> <span id="pProfChild">Rahul Sharma</span></p>
+                    <hr style="border:0;border-top:1px solid rgba(0,0,0,0.1);margin:var(--spacing-md) 0">
+                    <p>Profile information is read-only. Contact the administrator to correct official details.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div id="section-settings" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header"><h2>Settings</h2><p>Manage your preferences.</p></div>
+            <div class="grid-2-col">
+                <div class="glass-panel">
+                    <h3>Notification Preferences</h3>
+                    <div style="margin-top:var(--spacing-md);display:flex;flex-direction:column;gap:var(--spacing-md)">
+                        <label style="display:flex;align-items:center;gap:var(--spacing-sm);cursor:pointer"><input type="checkbox" checked style="width:16px;height:16px"> Email Notifications</label>
+                        <label style="display:flex;align-items:center;gap:var(--spacing-sm);cursor:pointer"><input type="checkbox" checked style="width:16px;height:16px"> SMS Notifications</label>
+                        <label style="display:flex;align-items:center;gap:var(--spacing-sm);cursor:pointer"><input type="checkbox" checked style="width:16px;height:16px"> Outpass Request Alerts</label>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top:var(--spacing-lg)" onclick="alert('Preferences saved!')">Save Preferences</button>
+                </div>
+                <div class="glass-panel">
+                    <h3>Account Security</h3>
+                    <p>Keep your account secure.</p>
+                    <button class="btn btn-secondary" onclick="alert('Password change coming soon.')">Change Password</button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Review Modal -->
+<div class="modal-backdrop" id="reviewModal">
+    <div class="modal">
+        <div class="modal-header"><h3>Review Outpass Request</h3><button class="modal-close">&times;</button></div>
+        <div class="modal-body">
+            <div id="reviewContent" style="margin-bottom:var(--spacing-md)"></div>
+            <div id="rejectSection" style="display:none;margin-top:var(--spacing-md);border-top:1px solid var(--color-border);padding-top:var(--spacing-md)">
+                <div class="form-group">
+                    <label class="form-label" style="color:var(--color-danger)">Reason for rejection</label>
+                    <textarea class="form-control" id="rejectReason" placeholder="Please provide a reason..."></textarea>
+                </div>
+                <div style="display:flex;gap:var(--spacing-sm)">
+                    <button class="btn btn-secondary" style="flex:1" onclick="hideRejectSection()">Cancel</button>
+                    <button class="btn btn-danger" style="flex:1" onclick="confirmReject()">Confirm Reject</button>
+                </div>
+            </div>
+            <div id="approveSection" style="display:none;margin-top:var(--spacing-md);border-top:1px solid var(--color-border);padding-top:var(--spacing-md)">
+                <p style="font-size:0.875rem;color:var(--color-text-muted);margin-bottom:var(--spacing-md)">After your approval, this request will be forwarded to the Warden for final approval.</p>
+                <div style="display:flex;gap:var(--spacing-sm)">
+                    <button class="btn btn-secondary" style="flex:1" onclick="hideApproveSection()">Cancel</button>
+                    <button class="btn btn-primary" style="flex:1" onclick="confirmApprove()">Confirm Approval</button>
+                </div>
+            </div>
+            <div id="actionButtons" style="display:flex;gap:var(--spacing-sm);margin-top:var(--spacing-md)">
+                <button class="btn btn-danger" style="flex:1" onclick="showRejectSection()">✕ Reject</button>
+                <button class="btn btn-primary" style="flex:1" onclick="showApproveSection()">✓ Approve</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../js/auth-guard.js"></script>
+<script src="../js/demo-data.js"></script>
+<script src="../js/outpass.js"></script>
+<script src="../js/sections.js"></script>
+<script src="../js/main.js"></script>
+<script>
+    const parentAccount = window.HMS_AUTH_USER || {};
+    const parentId = parentAccount.email || 'PAR20260045';
+    const studentId = parentAccount.profile?.studentId || 'STU20260045';
+    let currentReviewId = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadParentData();
+        loadOutpasses();
+        loadNotifications();
+        initSections(sectionId => {
+            if (sectionId === 'mychild') loadChildSection();
+            if (sectionId === 'pending') loadPendingSection();
+            if (sectionId === 'history') loadHistorySection();
+        });
+    });
+
+    function loadParentData() {
+        const db = window.HMS_DB.get();
+        const parent = db.parents.find(p => p.id === parentId);
+        const student = db.students.find(s => s.id === studentId);
+        if (parent) {
+            document.getElementById('headerName').textContent = parent.name;
+            document.getElementById('welcomeName').textContent = parent.name.split(' ').slice(0,2).join(' ');
+            const initials = parent.name.split(' ').map(n => n[0]).join('').replace('.','').substring(0,2);
+            document.getElementById('headerAvatar').textContent = initials;
+            document.getElementById('profileAvatar').textContent = initials;
+            document.getElementById('profileName').textContent = parent.name;
+            document.getElementById('profileId').textContent = parent.id;
+            document.getElementById('pProfName').textContent = parent.name;
+            document.getElementById('pProfId').textContent = parent.id;
+            document.getElementById('pProfPhone').textContent = parent.phone;
+        }
+        if (student) {
+            ['profChildName','childName'].forEach(id => document.getElementById(id).textContent = student.name);
+            ['profChildId','childId'].forEach(id => document.getElementById(id).textContent = student.id);
+            ['profChildCourse','childCourse'].forEach(id => document.getElementById(id).textContent = student.course);
+            ['profChildYear','childYear'].forEach(id => document.getElementById(id).textContent = student.year);
+            ['profChildHostel','childHostel'].forEach(id => document.getElementById(id).textContent = student.hostel);
+            ['profChildRoom','childRoom'].forEach(id => document.getElementById(id).textContent = student.room);
+            document.getElementById('childRoomType').textContent = student.roomType;
+            document.getElementById('childPhone').textContent = student.phone;
+            document.getElementById('pProfChild').textContent = student.name;
+            const initials = student.name.split(' ').map(n => n[0]).join('');
+            document.getElementById('childAvatar').textContent = initials;
+        }
+    }
+
+    function loadOutpasses() {
+        const db = window.HMS_DB.get();
+        const outpasses = db.outpasses.filter(o => o.studentId === studentId).reverse();
+        const pendingBody = document.getElementById('pendingTableBody');
+        const historyBody = document.getElementById('historyTableBody');
+        pendingBody.innerHTML = '';
+        historyBody.innerHTML = '';
+        let pendingCount = 0, approvedCount = 0;
+        outpasses.forEach(op => {
+            const state = calculateOutpassState(op);
+            if (op.parentStatus === 'PENDING') {
+                pendingCount++;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td><strong>${op.destination}</strong><br><span style="font-size:0.75rem">${op.type}</span></td><td>${formatDate(op.departureDate)}</td><td><button class="btn btn-primary btn-sm" onclick="openReviewModal('${op.id}')">Review Request</button></td>`;
+                pendingBody.appendChild(tr);
+            } else {
+                if (op.parentStatus === 'APPROVED') approvedCount++;
+                let badgeClass = 'badge-info';
+                if (state.status.includes('REJECTED')) badgeClass = 'badge-danger';
+                if (state.status.includes('APPROVED') || state.status === 'ACTIVE') badgeClass = 'badge-success';
+                if (state.status === 'COMPLETED') badgeClass = 'badge-warning';
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td><strong>${op.destination}</strong></td><td>${formatDate(op.departureDate)}</td><td><span class="badge ${badgeClass}">${state.display}</span></td>`;
+                historyBody.appendChild(tr);
+            }
+        });
+        if (pendingCount === 0) pendingBody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--color-text-muted)">No pending requests.</td></tr>';
+        document.getElementById('statPending').textContent = pendingCount;
+        document.getElementById('statApproved').textContent = approvedCount;
+    }
+
+    function loadChildSection() {
+        const db = window.HMS_DB.get();
+        const recentOps = db.outpasses.filter(o => o.studentId === studentId).reverse().slice(0, 3);
+        const container = document.getElementById('childRecentOutpasses');
+        if (recentOps.length === 0) { container.innerHTML = '<p style="color:var(--color-text-muted)">No outpass activity yet.</p>'; return; }
+        container.innerHTML = recentOps.map(op => {
+            const state = calculateOutpassState(op);
+            let badgeClass = 'badge-info';
+            if (state.status.includes('REJECTED')) badgeClass = 'badge-danger';
+            if (state.status.includes('APPROVED') || state.status === 'ACTIVE') badgeClass = 'badge-success';
+            if (state.status === 'COMPLETED') badgeClass = 'badge-warning';
+            return `<div style="padding:var(--spacing-sm);background:var(--color-background);border-radius:var(--radius-md)"><strong>${op.destination}</strong> <span class="badge ${badgeClass}" style="margin-left:0.5rem">${state.display}</span><br><small style="color:var(--color-text-muted)">${formatDate(op.departureDate)}</small></div>`;
+        }).join('');
+    }
+
+    function loadPendingSection() {
+        const db = window.HMS_DB.get();
+        const pendingOps = db.outpasses.filter(o => o.studentId === studentId && o.parentStatus === 'PENDING').reverse();
+        const container = document.getElementById('pendingCardsContainer');
+        if (pendingOps.length === 0) { container.innerHTML = '<div class="glass-panel"><p>No outpasses pending your approval.</p></div>'; return; }
+        container.innerHTML = pendingOps.map(op => `
+            <div class="glass-panel">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start">
+                    <div>
+                        <h3 style="margin-bottom:0.25rem">${op.destination}</h3>
+                        <p style="margin:0;color:var(--color-text-muted)">${op.type}</p>
+                    </div>
+                    <span class="badge badge-warning">Awaiting Your Approval</span>
+                </div>
+                <hr style="border:0;border-top:1px solid rgba(0,0,0,0.1);margin:var(--spacing-md) 0">
+                <p><strong>Reason:</strong> ${op.reason}</p>
+                <p><strong>Departure:</strong> ${formatDate(op.departureDate)}</p>
+                <p><strong>Expected Return:</strong> ${formatDate(op.returnDate)}</p>
+                <div style="display:flex;gap:var(--spacing-sm);margin-top:var(--spacing-md)">
+                    <button class="btn btn-danger" style="flex:1" onclick="quickReject('${op.id}')">✕ Reject</button>
+                    <button class="btn btn-primary" style="flex:1" onclick="quickApprove('${op.id}')">✓ Approve</button>
+                </div>
+            </div>`).join('');
+    }
+
+    function quickApprove(id) {
+        if (parentApproveOutpass(id)) { loadOutpasses(); loadPendingSection(); alert('Outpass Approved. Forwarded to Warden.'); }
+    }
+
+    function quickReject(id) {
+        const reason = prompt('Please provide a reason for rejection:');
+        if (!reason) return;
+        const db = window.HMS_DB.get();
+        const idx = db.outpasses.findIndex(o => o.id === id);
+        if (idx !== -1) {
+            db.outpasses[idx].parentStatus = 'REJECTED';
+            db.outpasses[idx].rejectionReason = reason;
+            db.outpasses[idx].finalStatus = 'REJECTED';
+            db.notifications.push({ id: Date.now(), userId: db.outpasses[idx].studentId, title: 'Parent Rejected Outpass', message: `Your outpass was rejected. Reason: ${reason}`, date: new Date().toISOString(), read: false });
+            window.HMS_DB.save(db);
+            loadOutpasses();
+            loadPendingSection();
+            alert('Outpass request rejected.');
+        }
+    }
+
+    function loadHistorySection() {
+        const db = window.HMS_DB.get();
+        const filter = document.getElementById('historyFilter') ? document.getElementById('historyFilter').value : 'ALL';
+        let outpasses = db.outpasses.filter(o => o.studentId === studentId).reverse();
+        const tbody = document.getElementById('fullHistoryBody');
+        tbody.innerHTML = '';
+        outpasses.forEach(op => {
+            const state = calculateOutpassState(op);
+            if (filter !== 'ALL') {
+                if (filter === 'PENDING' && op.parentStatus !== 'PENDING') return;
+                if (filter === 'APPROVED' && !state.status.includes('APPROVED')) return;
+                if (filter === 'REJECTED' && !state.status.includes('REJECTED')) return;
+                if (filter === 'ACTIVE' && state.status !== 'ACTIVE') return;
+                if (filter === 'COMPLETED' && state.status !== 'COMPLETED') return;
+            }
+            let badgeClass = 'badge-info';
+            if (state.status.includes('REJECTED')) badgeClass = 'badge-danger';
+            if (state.status.includes('APPROVED') || state.status === 'ACTIVE') badgeClass = 'badge-success';
+            if (state.status === 'COMPLETED') badgeClass = 'badge-warning';
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td><strong>${op.destination}</strong></td><td>${op.type}</td><td>${formatDate(op.departureDate)}</td><td>${formatDate(op.returnDate)}</td><td><span class="badge ${badgeClass}">${state.display}</span></td>`;
+            tbody.appendChild(tr);
+        });
+        if (!tbody.hasChildNodes()) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--color-text-muted)">No records found.</td></tr>';
+    }
+
+    function openReviewModal(id) {
+        currentReviewId = id;
+        const db = window.HMS_DB.get();
+        const op = db.outpasses.find(o => o.id === id);
+        document.getElementById('reviewContent').innerHTML = `
+            <p><strong>Destination:</strong> ${op.destination}</p>
+            <p><strong>Reason:</strong> ${op.reason}</p>
+            <p><strong>Departure:</strong> ${formatDate(op.departureDate)}</p>
+            <p><strong>Expected Return:</strong> ${formatDate(op.returnDate)}</p>`;
+        hideRejectSection();
+        hideApproveSection();
+        document.getElementById('actionButtons').style.display = 'flex';
+        openModal('reviewModal');
+    }
+
+    function showRejectSection() { document.getElementById('actionButtons').style.display = 'none'; document.getElementById('rejectSection').style.display = 'block'; document.getElementById('approveSection').style.display = 'none'; }
+    function hideRejectSection() { document.getElementById('actionButtons').style.display = 'flex'; document.getElementById('rejectSection').style.display = 'none'; }
+    function showApproveSection() { document.getElementById('actionButtons').style.display = 'none'; document.getElementById('rejectSection').style.display = 'none'; document.getElementById('approveSection').style.display = 'block'; }
+    function hideApproveSection() { document.getElementById('actionButtons').style.display = 'flex'; document.getElementById('approveSection').style.display = 'none'; }
+
+    function confirmApprove() {
+        const confirmButton = document.querySelector('#approveSection .btn-primary');
+        if (confirmButton) confirmButton.disabled = true;
+        try {
+            if (parentApproveOutpass(currentReviewId)) {
+                closeModal('reviewModal');
+                loadOutpasses();
+                loadPendingSection();
+                alert('Outpass approved and forwarded to the Warden.');
+            } else {
+                alert('This request is no longer pending. Refresh the list and try again.');
+            }
+        } catch (error) {
+            console.error('Unable to approve outpass:', error);
+            alert('The approval could not be saved. Please refresh and try again.');
+        } finally {
+            if (confirmButton) confirmButton.disabled = false;
+        }
+    }
+
+    function confirmReject() {
+        const reason = document.getElementById('rejectReason').value;
+        if (!reason) { alert('Please provide a reason.'); return; }
+        const db = window.HMS_DB.get();
+        const idx = db.outpasses.findIndex(o => o.id === currentReviewId);
+        if (idx !== -1) {
+            db.outpasses[idx].parentStatus = 'REJECTED';
+            db.outpasses[idx].rejectionReason = reason;
+            db.outpasses[idx].finalStatus = 'REJECTED';
+            db.notifications.push({ id: Date.now(), userId: db.outpasses[idx].studentId, title: 'Parent Rejected Outpass', message: `Your outpass was rejected. Reason: ${reason}`, date: new Date().toISOString(), read: false });
+            window.HMS_DB.save(db);
+            closeModal('reviewModal');
+            loadOutpasses();
+            alert('Outpass request rejected.');
+        }
+    }
+
+    function loadNotifications() {
+        const db = window.HMS_DB.get();
+        const notifs = (db.notifications || []).filter(n => n.userId === parentId).reverse();
+        const notifList = document.getElementById('notifList');
+        notifList.innerHTML = '';
+        let unreadCount = 0;
+        notifs.forEach(n => {
+            if (!n.read) unreadCount++;
+            const item = document.createElement('div');
+            item.className = 'notification-item';
+            item.innerHTML = `<strong style="color:${n.read ? 'inherit' : 'var(--color-primary)'}">${n.title}</strong><br>${n.message}<br><small style="color:var(--color-text-muted)">${formatDate(n.date)}</small>`;
+            notifList.appendChild(item);
+        });
+        const badge = document.getElementById('notifBadge');
+        if (unreadCount > 0) badge.style.display = 'block';
+        else { badge.style.display = 'none'; if (notifs.length === 0) notifList.innerHTML = '<div class="notification-item">No new notifications</div>'; }
+    }
+</script>
+</body>
+</html>
