@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Hostel Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+<div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-brand"><span>🏢</span> <span>Hostel System</span></div>
+        </div>
+        <div class="sidebar-nav">
+            <a href="#" class="nav-item active" data-section="dashboard"><span>📊</span> Dashboard</a>
+            <a href="#" class="nav-item" data-section="outpass"><span>🚪</span> Outpass</a>
+            <a href="#" class="nav-item" data-section="room"><span>🛏️</span> Room</a>
+            <a href="#" class="nav-item" data-section="complaints"><span>📝</span> Complaints</a>
+            <a href="#" class="nav-item" data-section="notices"><span>📌</span> Notices</a>
+            <a href="#" class="nav-item" data-section="profile"><span>👤</span> Profile</a>
+            <a href="#" class="nav-item" data-section="settings"><span>⚙️</span> Settings</a>
+        </div>
+        <div class="sidebar-footer">
+            <a href="../index.html" class="nav-item" style="color:var(--color-danger)"><span>🚪</span> Logout</a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="top-header">
+            <div class="header-left">
+                <button class="menu-toggle" id="menu-toggle">☰</button>
+                <div class="header-title">Student Portal</div>
+            </div>
+            <div class="header-right">
+                <div class="notification-icon-wrapper" id="notification-toggle">
+                    <span style="font-size:1.25rem">🔔</span>
+                    <div class="notification-badge" id="notifBadge"></div>
+                    <div class="notification-panel glass-panel" id="notification-panel">
+                        <div class="notification-header">Notifications</div>
+                        <div class="notification-list" id="notifList"></div>
+                    </div>
+                </div>
+                <div class="user-profile-sm">
+                    <div class="avatar" id="headerAvatar">RS</div>
+                    <span id="headerName">Rahul Sharma</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- DASHBOARD SECTION -->
+        <div id="section-dashboard" class="section-content dashboard-content">
+            <div class="dashboard-header">
+                <h2>Welcome, <span id="welcomeName">Rahul</span> 👋</h2>
+                <p>Here is your hostel summary and recent updates.</p>
+            </div>
+            <div class="grid-cards">
+                <div class="glass-card stat-card">
+                    <div class="stat-icon">🛏️</div>
+                    <div class="stat-content"><h4>Room Number</h4><div class="stat-value" id="statRoom">214</div></div>
+                </div>
+                <div class="glass-card stat-card">
+                    <div class="stat-icon" style="background-color:var(--color-success-light);color:var(--color-success)">🏢</div>
+                    <div class="stat-content"><h4>Hostel</h4><div class="stat-value" style="font-size:1.1rem" id="statHostel">Boys Hostel - 2</div></div>
+                </div>
+                <div class="glass-card stat-card">
+                    <div class="stat-icon" style="background-color:var(--color-warning-light);color:var(--color-warning)">⏳</div>
+                    <div class="stat-content"><h4>Pending Outpass</h4><div class="stat-value" id="statPending">0</div></div>
+                </div>
+            </div>
+            <div class="grid-2-col">
+                <div class="glass-panel">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--spacing-md)">
+                        <h3>Recent Outpasses</h3>
+                        <button class="btn btn-primary btn-sm" onclick="openModal('applyOutpassModal')">+ Apply New</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead><tr><th>Destination</th><th>Departure</th><th>Status</th><th>Action</th></tr></thead>
+                            <tbody id="outpassTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="glass-panel">
+                    <h3>Profile Information</h3>
+                    <div style="margin-top:var(--spacing-md)">
+                        <p><strong>Name:</strong> <span id="profName">Rahul Sharma</span></p>
+                        <p><strong>Student ID:</strong> <span id="profId">STU20260045</span></p>
+                        <p><strong>Course:</strong> <span id="profCourse">B.Tech CSE</span></p>
+                        <p><strong>Year:</strong> <span id="profYear">2nd Year</span></p>
+                        <hr style="border:0;border-top:1px solid rgba(0,0,0,0.1);margin:var(--spacing-sm) 0">
+                        <p><strong>Room Type:</strong> <span id="profRoomType">Triple Sharing</span></p>
+                        <p><strong>Contact:</strong> <span id="profPhone">+91 9876543210</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- OUTPASS SECTION -->
+        <div id="section-outpass" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header" style="display:flex;justify-content:space-between;align-items:center">
+                <div><h2>My Outpasses</h2><p>Manage and track all your outpass requests.</p></div>
+                <button class="btn btn-primary" onclick="openModal('applyOutpassModal')">+ Apply New Outpass</button>
+            </div>
+            <div class="glass-panel">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead><tr><th>ID</th><th>Destination</th><th>Type</th><th>Departure</th><th>Return</th><th>Status</th><th>Action</th></tr></thead>
+                        <tbody id="outpassFullTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROOM SECTION -->
+        <div id="section-room" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header"><h2>Room Details</h2><p>Your current room assignment and facilities.</p></div>
+            <div class="grid-2-col">
+                <div class="glass-panel">
+                    <h3>Room Information</h3>
+                    <div style="margin-top:var(--spacing-md)">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--spacing-md);margin-bottom:var(--spacing-lg)">
+                            <div class="glass-card stat-card">
+                                <div class="stat-icon">🛏️</div>
+                                <div class="stat-content"><h4>Room No.</h4><div class="stat-value" id="roomNo">214</div></div>
+                            </div>
+                            <div class="glass-card stat-card">
+                                <div class="stat-icon" style="background-color:var(--color-success-light);color:var(--color-success)">🏢</div>
+                                <div class="stat-content"><h4>Hostel</h4><div class="stat-value" style="font-size:1rem" id="roomHostel">Boys Hostel - 2</div></div>
+                            </div>
+                        </div>
+                        <p><strong>Room Type:</strong> <span id="roomType">Triple Sharing</span></p>
+                        <p><strong>Floor:</strong> 2nd Floor</p>
+                        <p><strong>Block:</strong> Block B</p>
+                        <p><strong>Attached Bathroom:</strong> Yes</p>
+                        <p><strong>AC:</strong> No</p>
+                        <hr style="border:0;border-top:1px solid rgba(0,0,0,0.1);margin:var(--spacing-md) 0">
+                        <h4 style="margin-bottom:var(--spacing-sm)">Roommates</h4>
+                        <div style="display:flex;flex-direction:column;gap:0.5rem">
+                            <div style="display:flex;align-items:center;gap:var(--spacing-sm)"><div class="avatar" style="width:32px;height:32px;font-size:0.75rem">AK</div><span>Arjun Kumar</span></div>
+                            <div style="display:flex;align-items:center;gap:var(--spacing-sm)"><div class="avatar" style="width:32px;height:32px;font-size:0.75rem;background-color:var(--color-success-light);color:var(--color-success)">VM</div><span>Vikram Mehta</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-panel">
+                    <h3>Facilities & Amenities</h3>
+                    <div style="margin-top:var(--spacing-md)">
+                        <div style="display:flex;flex-direction:column;gap:var(--spacing-sm)">
+                            <div style="display:flex;justify-content:space-between;padding:var(--spacing-sm);background:var(--color-background);border-radius:var(--radius-md)"><span>Wi-Fi</span><span class="badge badge-success">Available</span></div>
+                            <div style="display:flex;justify-content:space-between;padding:var(--spacing-sm);background:var(--color-background);border-radius:var(--radius-md)"><span>Laundry</span><span class="badge badge-success">Available</span></div>
+                            <div style="display:flex;justify-content:space-between;padding:var(--spacing-sm);background:var(--color-background);border-radius:var(--radius-md)"><span>Gym</span><span class="badge badge-warning">Restricted Hours</span></div>
+                            <div style="display:flex;justify-content:space-between;padding:var(--spacing-sm);background:var(--color-background);border-radius:var(--radius-md)"><span>Common Room</span><span class="badge badge-success">Open</span></div>
+                            <div style="display:flex;justify-content:space-between;padding:var(--spacing-sm);background:var(--color-background);border-radius:var(--radius-md)"><span>Mess</span><span class="badge badge-success">Operational</span></div>
+                            <div style="display:flex;justify-content:space-between;padding:var(--spacing-sm);background:var(--color-background);border-radius:var(--radius-md)"><span>Hot Water</span><span class="badge badge-warning">6AM - 9AM</span></div>
+                        </div>
+                        <div style="margin-top:var(--spacing-lg)">
+                            <button class="btn btn-primary" onclick="alert('Room change request will be submitted to the Warden for review.')">Request Room Change</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPLAINTS SECTION -->
+        <div id="section-complaints" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header" style="display:flex;justify-content:space-between;align-items:center">
+                <div><h2>Complaints</h2><p>View and raise maintenance or service complaints.</p></div>
+                <button class="btn btn-primary" onclick="openModal('newComplaintModal')">+ New Complaint</button>
+            </div>
+            <div class="glass-panel">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead><tr><th>ID</th><th>Title</th><th>Description</th><th>Date</th><th>Status</th></tr></thead>
+                        <tbody id="complaintsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- NOTICES SECTION -->
+        <div id="section-notices" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header"><h2>Notices</h2><p>Important announcements from hostel administration.</p></div>
+            <div id="noticesContainer" style="display:grid;gap:var(--spacing-md)"></div>
+        </div>
+
+        <!-- PROFILE SECTION -->
+        <div id="section-profile" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header"><h2>My Profile</h2><p>Your personal and academic information.</p></div>
+            <div class="grid-2-col">
+                <div class="glass-panel">
+                    <h3>Personal Information</h3>
+                    <div style="margin-top:var(--spacing-md)">
+                        <div style="display:flex;align-items:center;gap:var(--spacing-lg);margin-bottom:var(--spacing-xl)">
+                            <div class="avatar" style="width:80px;height:80px;font-size:2rem" id="profileAvatar">RS</div>
+                            <div>
+                                <h3 id="profileName" style="margin-bottom:0.25rem">Rahul Sharma</h3>
+                                <p style="margin:0;color:var(--color-text-muted)" id="profileId">STU20260045</p>
+                            </div>
+                        </div>
+                        <p><strong>Full Name:</strong> <span id="pProfName">Rahul Sharma</span></p>
+                        <p><strong>Student ID:</strong> <span id="pProfId">STU20260045</span></p>
+                        <p><strong>Course:</strong> <span id="pProfCourse">B.Tech CSE</span></p>
+                        <p><strong>Year:</strong> <span id="pProfYear">2nd Year</span></p>
+                        <p><strong>Phone:</strong> <span id="pProfPhone">+91 9876543210</span></p>
+                    </div>
+                </div>
+                <div class="glass-panel">
+                    <h3>Hostel Information</h3>
+                    <div style="margin-top:var(--spacing-md)">
+                        <p><strong>Hostel:</strong> <span id="pProfHostel">Boys Hostel - 2</span></p>
+                        <p><strong>Room No:</strong> <span id="pProfRoom">214</span></p>
+                        <p><strong>Room Type:</strong> <span id="pProfRoomType">Triple Sharing</span></p>
+                        <p><strong>Parent ID:</strong> <span id="pProfParentId">PAR20260045</span></p>
+                    </div>
+                    <hr style="border:0;border-top:1px solid rgba(0,0,0,0.1);margin:var(--spacing-md) 0">
+                    <p>Profile information is read-only. Contact the administrator to correct official details.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SETTINGS SECTION -->
+        <div id="section-settings" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header"><h2>Settings</h2><p>Manage your account and notification preferences.</p></div>
+            <div class="grid-2-col">
+                <div class="glass-panel">
+                    <h3>Notification Preferences</h3>
+                    <div style="margin-top:var(--spacing-md);display:flex;flex-direction:column;gap:var(--spacing-md)">
+                        <label style="display:flex;align-items:center;gap:var(--spacing-sm);cursor:pointer"><input type="checkbox" checked style="width:16px;height:16px"> Email Notifications</label>
+                        <label style="display:flex;align-items:center;gap:var(--spacing-sm);cursor:pointer"><input type="checkbox" checked style="width:16px;height:16px"> SMS Notifications</label>
+                        <label style="display:flex;align-items:center;gap:var(--spacing-sm);cursor:pointer"><input type="checkbox" style="width:16px;height:16px"> Push Notifications</label>
+                        <label style="display:flex;align-items:center;gap:var(--spacing-sm);cursor:pointer"><input type="checkbox" checked style="width:16px;height:16px"> Outpass Status Alerts</label>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top:var(--spacing-lg)" onclick="alert('Notification preferences saved!')">Save Preferences</button>
+                </div>
+                <div class="glass-panel">
+                    <h3>Account Security</h3>
+                    <div style="margin-top:var(--spacing-md)">
+                        <p>Keep your account secure by using a strong password.</p>
+                        <button class="btn btn-secondary" onclick="alert('Password change will be available soon.')">Change Password</button>
+                    </div>
+                    <hr style="border:0;border-top:1px solid rgba(0,0,0,0.1);margin:var(--spacing-lg) 0">
+                    <h3>Theme</h3>
+                    <div style="margin-top:var(--spacing-md);display:flex;flex-direction:column;gap:var(--spacing-sm)">
+                        <label style="display:flex;align-items:center;gap:var(--spacing-sm);cursor:pointer"><input type="radio" name="theme" checked style="width:16px;height:16px"> Light Mode</label>
+                        <label style="display:flex;align-items:center;gap:var(--spacing-sm);cursor:pointer"><input type="radio" name="theme" style="width:16px;height:16px"> Dark Mode</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Apply Outpass Modal -->
+<div class="modal-backdrop" id="applyOutpassModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Apply for Outpass</h3>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="outpassForm">
+                <div class="form-group">
+                    <label class="form-label">Outpass Type</label>
+                    <select class="form-control" id="opType">
+                        <option value="Normal Outpass">Normal Outpass</option>
+                        <option value="Weekend Outpass">Weekend Outpass</option>
+                        <option value="Emergency Outpass">Emergency Outpass</option>
+                        <option value="Medical Outpass">Medical Outpass</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Destination</label>
+                    <input type="text" class="form-control" id="opDest" placeholder="Where are you going?">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Reason</label>
+                    <textarea class="form-control" id="opReason" placeholder="State your reason..."></textarea>
+                </div>
+                <div style="display:flex;gap:var(--spacing-md)">
+                    <div class="form-group" style="flex:1">
+                        <label class="form-label">Departure Date &amp; Time</label>
+                        <input type="datetime-local" class="form-control" id="opDep">
+                    </div>
+                    <div class="form-group" style="flex:1">
+                        <label class="form-label">Expected Return</label>
+                        <input type="datetime-local" class="form-control" id="opRet">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('applyOutpassModal')">Cancel</button>
+            <button class="btn btn-primary" id="btnSubmitOutpass">Submit Outpass</button>
+        </div>
+    </div>
+</div>
+
+<!-- View Outpass Modal -->
+<div class="modal-backdrop" id="viewOutpassModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Outpass Details</h3>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body" id="viewOutpassContent"></div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('viewOutpassModal')">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- New Complaint Modal -->
+<div class="modal-backdrop" id="newComplaintModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Submit New Complaint</h3>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label" for="cmpCategory">Complaint category</label>
+                <select class="form-control" id="cmpCategory" onchange="toggleOtherComplaintCategory()" required>
+                    <option value="">Select a category</option>
+                    <option>Electrical Issue</option><option>Plumbing Issue</option><option>Room Maintenance</option>
+                    <option>Furniture Issue</option><option>Internet / Wi-Fi Issue</option><option>Cleaning / Hygiene</option>
+                    <option>Water Supply</option><option>Food / Mess Issue</option><option>Security Issue</option>
+                    <option>Ragging / Harassment</option><option>Other</option>
+                </select>
+            </div>
+            <div class="form-group" id="otherComplaintCategoryGroup" hidden>
+                <label class="form-label" for="cmpOtherCategory">Specify complaint type</label>
+                <input class="form-control" id="cmpOtherCategory" maxlength="100" placeholder="Complaint type">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Title</label>
+                <input type="text" class="form-control" id="cmpTitle" placeholder="Brief title of the issue">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea class="form-control" id="cmpDesc" rows="4" placeholder="Describe the issue in detail..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('newComplaintModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitComplaint()">Submit Complaint</button>
+        </div>
+    </div>
+</div>
+
+<script src="../js/auth-guard.js"></script>
+<script src="../js/demo-data.js"></script>
+<script src="../js/outpass.js"></script>
+<script src="../js/sections.js"></script>
+<script src="../js/main.js"></script>
+<script>
+    const studentId = window.HMS_AUTH_USER?.id || 'STU20260045';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadStudentData();
+        loadOutpasses();
+        loadNotifications();
+        loadComplaints();
+        loadNotices();
+        document.getElementById('btnSubmitOutpass').addEventListener('click', handleOutpassSubmit);
+
+        initSections(sectionId => {
+            if (sectionId === 'outpass') loadFullOutpasses();
+            if (sectionId === 'complaints') loadComplaints();
+            if (sectionId === 'notices') loadNotices();
+        });
+    });
+
+    function loadStudentData() {
+        const db = window.HMS_DB.get();
+        const student = db.students.find(s => s.id === studentId);
+        if (!student) return;
+        ['headerName', 'welcomeName'].forEach(id => {
+            const el = document.getElementById(id);
+            if (id === 'welcomeName') el.textContent = student.name.split(' ')[0];
+            else el.textContent = student.name;
+        });
+        const initials = student.name.split(' ').map(n => n[0]).join('');
+        document.getElementById('headerAvatar').textContent = initials;
+        document.getElementById('profileAvatar').textContent = initials;
+        document.getElementById('statRoom').textContent = student.room;
+        document.getElementById('statHostel').textContent = student.hostel;
+        document.getElementById('roomNo').textContent = student.room;
+        document.getElementById('roomHostel').textContent = student.hostel;
+        document.getElementById('roomType').textContent = student.roomType;
+        ['profName','pProfName','profileName'].forEach(id => document.getElementById(id).textContent = student.name);
+        ['profId','pProfId','profileId'].forEach(id => document.getElementById(id).textContent = student.id);
+        ['profCourse','pProfCourse'].forEach(id => document.getElementById(id).textContent = student.course);
+        ['profYear','pProfYear'].forEach(id => document.getElementById(id).textContent = student.year);
+        ['profRoomType','pProfRoomType'].forEach(id => document.getElementById(id).textContent = student.roomType);
+        ['profPhone','pProfPhone'].forEach(id => document.getElementById(id).textContent = student.phone);
+        document.getElementById('pProfHostel').textContent = student.hostel;
+        document.getElementById('pProfRoom').textContent = student.room;
+        document.getElementById('pProfParentId').textContent = student.parentId;
+    }
+
+    function renderOutpassRow(op, compact) {
+        const state = calculateOutpassState(op);
+        let badgeClass = 'badge-info';
+        if (state.status.includes('APPROVED') || state.status === 'ACTIVE') badgeClass = 'badge-success';
+        if (state.status.includes('REJECTED')) badgeClass = 'badge-danger';
+        if (state.status === 'COMPLETED') badgeClass = 'badge-warning';
+        const tr = document.createElement('tr');
+        if (compact) {
+            tr.innerHTML = `
+                <td><strong>${op.destination}</strong><br><span style="font-size:0.75rem;color:var(--color-text-muted)">${op.id}</span></td>
+                <td>${formatDate(op.departureDate)}</td>
+                <td><span class="badge ${badgeClass}">${state.display}</span></td>
+                <td><button class="btn btn-secondary" style="padding:0.25rem 0.5rem" onclick="viewOutpass('${op.id}')">${state.qrLock ? '👁 View' : '▦ View QR Pass'}</button></td>
+            `;
+        } else {
+            tr.innerHTML = `
+                <td>${op.id}</td>
+                <td><strong>${op.destination}</strong></td>
+                <td>${op.type}</td>
+                <td>${formatDate(op.departureDate)}</td>
+                <td>${formatDate(op.returnDate)}</td>
+                <td><span class="badge ${badgeClass}">${state.display}</span></td>
+                <td><button class="btn btn-secondary" style="padding:0.25rem 0.5rem" onclick="viewOutpass('${op.id}')">${state.qrLock ? '👁 View' : '▦ View QR Pass'}</button></td>
+            `;
+        }
+        return tr;
+    }
+
+    function loadOutpasses() {
+        const db = window.HMS_DB.get();
+        const myOutpasses = db.outpasses.filter(o => o.studentId === studentId).reverse();
+        const tbody = document.getElementById('outpassTableBody');
+        tbody.innerHTML = '';
+        let pendingCount = 0;
+        myOutpasses.forEach(op => {
+            const state = calculateOutpassState(op);
+            if (state.status.includes('PENDING')) pendingCount++;
+            tbody.appendChild(renderOutpassRow(op, true));
+        });
+        if (myOutpasses.length === 0) tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--color-text-muted)">No outpasses found. Apply for one!</td></tr>';
+        document.getElementById('statPending').textContent = pendingCount;
+    }
+
+    function loadFullOutpasses() {
+        const db = window.HMS_DB.get();
+        const myOutpasses = db.outpasses.filter(o => o.studentId === studentId).reverse();
+        const tbody = document.getElementById('outpassFullTableBody');
+        tbody.innerHTML = '';
+        myOutpasses.forEach(op => tbody.appendChild(renderOutpassRow(op, false)));
+        if (myOutpasses.length === 0) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--color-text-muted)">No outpass records found.</td></tr>';
+    }
+
+    function handleOutpassSubmit() {
+        const dest = document.getElementById('opDest').value.trim();
+        const type = document.getElementById('opType').value;
+        const reason = document.getElementById('opReason').value.trim();
+        const dep = document.getElementById('opDep').value;
+        const ret = document.getElementById('opRet').value;
+        if (!dest || !reason || !dep || !ret) { alert('Please fill all fields'); return; }
+        submitOutpass(studentId, { destination: dest, type, reason, departureDate: dep, returnDate: ret });
+        closeModal('applyOutpassModal');
+        document.getElementById('outpassForm').reset();
+        loadOutpasses();
+        loadFullOutpasses();
+        alert('Outpass submitted successfully! Waiting for parent approval.');
+    }
+
+    function viewOutpass(id) {
+        const db = window.HMS_DB.get();
+        const op = db.outpasses.find(o => o.id === id);
+        if (!op) return;
+        const state = calculateOutpassState(op);
+        const authUser = window.HMS_AUTH_USER || {};
+        const returnTimestamp = new Date(op.returnDate).getTime();
+        const isExpired = !Number.isFinite(returnTimestamp) || returnTimestamp < Date.now();
+        const hasBothApprovals = op.parentStatus === 'APPROVED' && op.wardenStatus === 'APPROVED';
+        const isRejectedOrRevoked = op.parentStatus === 'REJECTED' || op.wardenStatus === 'REJECTED' || op.qrStatus === 'REVOKED' || op.finalStatus === 'CANCELLED';
+        let qrPassHtml = '';
+        if (hasBothApprovals && !isExpired && !isRejectedOrRevoked && state.status !== 'COMPLETED') {
+            qrPassHtml = `
+                <section class="glass-panel" style="text-align:center;margin:var(--spacing-md) 0" aria-label="Outpass QR pass">
+                    <h3>Outpass QR Pass</h3>
+                    <canvas id="outpassQrCanvas" aria-label="QR code containing the outpass ID"></canvas>
+                    <p id="qrRenderMessage" role="status" style="margin:.5rem 0"></p>
+                    <p><strong>Outpass ID:</strong> ${op.id}</p>
+                    <p><strong>Student:</strong> ${authUser.name || op.studentName || 'Current student'} (${authUser.id || op.studentId})</p>
+                    <p><strong>Destination:</strong> ${op.destination}</p>
+                    <p><strong>Departure:</strong> ${formatDate(op.departureDate)}</p>
+                    <p><strong>Expected Return:</strong> ${formatDate(op.returnDate)}</p>
+                    <p><strong>Validity:</strong> <span class="badge badge-success">VALID</span></p>
+                    <small style="color:var(--color-text-muted)">Gate staff can scan this code or enter the outpass ID manually.</small>
+                </section>`;
+        } else if (hasBothApprovals && isExpired) {
+            qrPassHtml = '<p class="badge badge-danger">This outpass has expired; its QR pass is unavailable.</p>';
+        }
+        let timelineHtml = `<div class="timeline"><div class="timeline-item completed"><div class="timeline-icon"></div><div class="timeline-content"><h4>✓ Request Submitted</h4><p>${formatDate(op.createdAt || op.departureDate)}</p></div></div>`;
+        if (op.parentStatus === 'PENDING') {
+            timelineHtml += `<div class="timeline-item current"><div class="timeline-icon"></div><div class="timeline-content"><h4>⏳ Waiting for Parent Approval</h4></div></div><div class="timeline-item"><div class="timeline-icon"></div><div class="timeline-content"><h4>🔒 Warden Approval Locked</h4></div></div>`;
+        } else if (op.parentStatus === 'REJECTED') {
+            timelineHtml += `<div class="timeline-item rejected"><div class="timeline-icon"></div><div class="timeline-content"><h4>✕ Parent Rejected</h4><p>Reason: ${op.rejectionReason || 'No reason provided'}</p></div></div>`;
+        } else if (op.parentStatus === 'APPROVED') {
+            timelineHtml += `<div class="timeline-item completed"><div class="timeline-icon"></div><div class="timeline-content"><h4>✓ Parent Approved</h4></div></div>`;
+            if (op.wardenStatus === 'PENDING' || op.wardenStatus === 'LOCKED') {
+                timelineHtml += `<div class="timeline-item current"><div class="timeline-icon"></div><div class="timeline-content"><h4>⏳ Waiting for Warden Approval</h4></div></div>`;
+            } else if (op.wardenStatus === 'REJECTED') {
+                timelineHtml += `<div class="timeline-item rejected"><div class="timeline-icon"></div><div class="timeline-content"><h4>✕ Warden Rejected</h4><p>Reason: ${op.rejectionReason || 'No reason'}</p></div></div>`;
+            } else if (op.wardenStatus === 'APPROVED') {
+                timelineHtml += `<div class="timeline-item completed"><div class="timeline-icon"></div><div class="timeline-content"><h4>✓ Warden Approved</h4></div></div><div class="timeline-item completed"><div class="timeline-icon"></div><div class="timeline-content"><h4>✓ Outpass Issued</h4><p style="color:var(--color-success);font-weight:600;margin-top:0.5rem">📱 QR Available</p></div></div>`;
+            }
+        }
+        timelineHtml += '</div>';
+        document.getElementById('viewOutpassContent').innerHTML = `
+            <div style="margin-bottom:var(--spacing-md)">
+                <p><strong>Destination:</strong> ${op.destination}</p>
+                <p><strong>Type:</strong> ${op.type}</p>
+                <p><strong>Reason:</strong> ${op.reason}</p>
+                <p><strong>Departure:</strong> ${formatDate(op.departureDate)}</p>
+                <p><strong>Return:</strong> ${formatDate(op.returnDate)}</p>
+                <div style="margin-top:var(--spacing-sm)"><strong>Status:</strong> <span class="badge badge-info">${state.display}</span></div>
+            </div>
+            <h4>Approval Timeline</h4>${timelineHtml}`;
+        document.getElementById('viewOutpassContent').innerHTML += qrPassHtml;
+        openModal('viewOutpassModal');
+        if (qrPassHtml) renderOutpassQr(op.id);
+    }
+
+    function renderOutpassQr(token) {
+        const canvas = document.getElementById('outpassQrCanvas');
+        const message = document.getElementById('qrRenderMessage');
+        if (!canvas || !message) return;
+        try {
+            drawOutpassQr(canvas, token);
+            message.textContent = '';
+        } catch (error) {
+            message.textContent = 'Unable to render this QR code. Please reopen the pass.';
+            console.error('QR rendering failed:', error);
+        }
+    }
+
+    // Offline QR Code Model 2 encoder: Version 1-L, sufficient for short outpass IDs.
+    function drawOutpassQr(canvas, value) {
+        const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
+        const text = String(value).toUpperCase();
+        if (!text || text.length > 25 || [...text].some(char => !alphabet.includes(char))) throw new Error('Unsupported outpass ID');
+        const bits = [];
+        const pushBits = (number, length) => { for (let i = length - 1; i >= 0; i--) bits.push((number >>> i) & 1); };
+        pushBits(0b0010, 4);
+        pushBits(text.length, 9);
+        for (let i = 0; i + 1 < text.length; i += 2) pushBits(alphabet.indexOf(text[i]) * 45 + alphabet.indexOf(text[i + 1]), 11);
+        if (text.length % 2) pushBits(alphabet.indexOf(text[text.length - 1]), 6);
+        pushBits(0, Math.min(4, 152 - bits.length));
+        while (bits.length % 8) bits.push(0);
+        const data = [];
+        for (let i = 0; i < bits.length; i += 8) data.push(bits.slice(i, i + 8).reduce((n, bit) => (n << 1) | bit, 0));
+        for (let pad = 0; data.length < 19; pad++) data.push(pad % 2 ? 0x11 : 0xec);
+
+        const exp = new Array(512), log = new Array(256);
+        let x = 1;
+        for (let i = 0; i < 255; i++) { exp[i] = x; log[x] = i; x <<= 1; if (x & 0x100) x ^= 0x11d; }
+        for (let i = 255; i < 512; i++) exp[i] = exp[i - 255];
+        const multiply = (a, b) => (!a || !b) ? 0 : exp[log[a] + log[b]];
+        let divisor = [1];
+        for (let i = 0; i < 7; i++) {
+            const next = new Array(divisor.length + 1).fill(0);
+            divisor.forEach((coefficient, j) => { next[j] ^= coefficient; next[j + 1] ^= multiply(coefficient, exp[i]); });
+            divisor = next;
+        }
+        const remainder = new Array(7).fill(0);
+        data.forEach(byte => {
+            const factor = byte ^ remainder.shift(); remainder.push(0);
+            divisor.forEach((coefficient, i) => { remainder[i] ^= multiply(coefficient, factor); });
+        });
+        const stream = [];
+        data.concat(remainder).forEach(byte => { for (let i = 7; i >= 0; i--) stream.push((byte >>> i) & 1); });
+
+        const size = 21, modules = Array.from({ length: size }, () => Array(size).fill(false));
+        const reserved = Array.from({ length: size }, () => Array(size).fill(false));
+        const setFunction = (row, col, dark) => { modules[row][col] = !!dark; reserved[row][col] = true; };
+        const finder = (top, left) => {
+            for (let dy = -1; dy <= 7; dy++) for (let dx = -1; dx <= 7; dx++) {
+                const row = top + dy, col = left + dx;
+                if (row < 0 || row >= size || col < 0 || col >= size) continue;
+                const inside = dy >= 0 && dy <= 6 && dx >= 0 && dx <= 6;
+                setFunction(row, col, inside && (dy === 0 || dy === 6 || dx === 0 || dx === 6 || (dy >= 2 && dy <= 4 && dx >= 2 && dx <= 4)));
+            }
+        };
+        finder(0, 0); finder(0, size - 7); finder(size - 7, 0);
+        for (let i = 8; i < size - 8; i++) { setFunction(6, i, i % 2 === 0); setFunction(i, 6, i % 2 === 0); }
+        setFunction(size - 8, 8, true);
+        let format = 1 << 3, rem = format;
+        for (let i = 0; i < 10; i++) rem = (rem << 1) ^ (((rem >>> 9) & 1) * 0x537);
+        const formatBits = ((format << 10) | rem) ^ 0x5412;
+        for (let i = 0; i <= 5; i++) setFunction(i, 8, (formatBits >>> i) & 1);
+        setFunction(7, 8, (formatBits >>> 6) & 1); setFunction(8, 8, (formatBits >>> 7) & 1); setFunction(8, 7, (formatBits >>> 8) & 1);
+        for (let i = 9; i < 15; i++) setFunction(8, 14 - i, (formatBits >>> i) & 1);
+        for (let i = 0; i < 8; i++) setFunction(8, size - 1 - i, (formatBits >>> i) & 1);
+        for (let i = 8; i < 15; i++) setFunction(size - 15 + i, 8, (formatBits >>> i) & 1);
+        let bitIndex = 0, upward = true;
+        for (let right = size - 1; right >= 1; right -= 2) {
+            if (right === 6) right = 5;
+            for (let vert = 0; vert < size; vert++) {
+                const row = upward ? size - 1 - vert : vert;
+                for (let offset = 0; offset < 2; offset++) {
+                    const col = right - offset;
+                    if (reserved[row][col]) continue;
+                    const bit = bitIndex < stream.length ? stream[bitIndex++] : 0;
+                    modules[row][col] = !!(bit ^ ((row + col) % 2 === 0));
+                }
+            }
+            upward = !upward;
+        }
+        const scale = 8, quiet = 4, side = (size + quiet * 2) * scale;
+        canvas.width = side; canvas.height = side;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, side, side); ctx.fillStyle = '#111';
+        for (let row = 0; row < size; row++) for (let col = 0; col < size; col++) if (modules[row][col]) ctx.fillRect((col + quiet) * scale, (row + quiet) * scale, scale, scale);
+    }
+
+    function loadComplaints() {
+        const db = window.HMS_DB.get();
+        const complaints = (db.complaints || []).filter(c => c.userId === studentId).reverse();
+        const tbody = document.getElementById('complaintsTableBody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        if (complaints.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--color-text-muted)">No complaints found. Submit one if you have an issue.</td></tr>';
+            return;
+        }
+        complaints.forEach(c => {
+            let badgeClass = c.status === 'RESOLVED' ? 'badge-success' : c.status === 'PENDING' ? 'badge-warning' : 'badge-info';
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${c.id}</td><td><strong>${c.title}</strong></td><td class="complaint-description">${c.category ? `<strong>${c.category}</strong><br>` : ''}${c.description}</td><td class="complaint-date">${formatDate(c.date)}</td><td><span class="badge ${badgeClass}">${c.status}</span></td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function submitComplaint() {
+        const title = document.getElementById('cmpTitle').value.trim();
+        const desc = document.getElementById('cmpDesc').value.trim();
+        const category = document.getElementById('cmpCategory').value;
+        const otherCategory = document.getElementById('cmpOtherCategory').value.trim();
+        if (!title || !desc || !category || (category === 'Other' && !otherCategory)) { alert('Please complete all required fields.'); return; }
+        const db = window.HMS_DB.get();
+        if (!db.complaints) db.complaints = [];
+        db.complaints.push({ id: 'CMP' + Date.now(), userId: studentId, title, category: category === 'Other' ? otherCategory : category, description: desc, status: 'PENDING', date: new Date().toISOString() });
+        window.HMS_DB.save(db);
+        closeModal('newComplaintModal');
+        document.getElementById('cmpTitle').value = '';
+        document.getElementById('cmpDesc').value = '';
+        document.getElementById('cmpCategory').value = '';
+        document.getElementById('cmpOtherCategory').value = '';
+        toggleOtherComplaintCategory();
+        loadComplaints();
+        alert('Complaint submitted successfully!');
+    }
+
+    function toggleOtherComplaintCategory() {
+        const isOther = document.getElementById('cmpCategory').value === 'Other';
+        const group = document.getElementById('otherComplaintCategoryGroup');
+        group.hidden = !isOther;
+        document.getElementById('cmpOtherCategory').required = isOther;
+    }
+
+    function loadNotices() {
+        const db = window.HMS_DB.get();
+        const notices = (db.notices || []).reverse();
+        const container = document.getElementById('noticesContainer');
+        if (!container) return;
+        if (notices.length === 0) {
+            container.innerHTML = '<div class="glass-panel"><p>No notices at this time.</p></div>';
+            return;
+        }
+        container.innerHTML = notices.map(n => `
+            <div class="glass-panel">
+                <h3 style="color:var(--color-primary);margin-bottom:0.5rem">${n.title}</h3>
+                <p style="margin-bottom:0.5rem;color:var(--color-text-main)">${n.content}</p>
+                <small style="color:var(--color-text-muted)">📅 ${formatDate(n.date)}</small>
+            </div>`).join('');
+    }
+
+    function loadNotifications() {
+        const db = window.HMS_DB.get();
+        const notifs = (db.notifications || []).filter(n => n.userId === studentId).reverse();
+        const notifList = document.getElementById('notifList');
+        notifList.innerHTML = '';
+        let unreadCount = 0;
+        notifs.forEach(n => {
+            if (!n.read) unreadCount++;
+            const item = document.createElement('div');
+            item.className = 'notification-item';
+            item.innerHTML = `<strong style="color:${n.read ? 'inherit' : 'var(--color-primary)'}">${n.title}</strong><br>${n.message}<br><small style="color:var(--color-text-muted)">${formatDate(n.date)}</small>`;
+            notifList.appendChild(item);
+        });
+        const badge = document.getElementById('notifBadge');
+        if (unreadCount > 0) badge.style.display = 'block';
+        else { badge.style.display = 'none'; if (notifs.length === 0) notifList.innerHTML = '<div class="notification-item">No new notifications</div>'; }
+    }
+</script>
+</body>
+</html>

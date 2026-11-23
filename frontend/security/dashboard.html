@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Dashboard - Hostel Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+<div class="app-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-brand"><span>🏢</span> <span>Hostel System</span></div>
+        </div>
+        <div class="sidebar-nav">
+            <a href="#" class="nav-item active" data-section="dashboard"><span>📊</span> Dashboard</a>
+            <a href="#" class="nav-item" data-section="qrverify"><span>📱</span> QR Verification</a>
+            <a href="#" class="nav-item" data-section="active"><span>📋</span> Active Outpasses</a>
+            <a href="#" class="nav-item" data-section="exitrecords"><span>🚪</span> Exit Records</a>
+            <a href="#" class="nav-item" data-section="returnrecords"><span>🔙</span> Return Records</a>
+            <a href="#" class="nav-item" data-section="latereturns"><span>⚠️</span> Late Returns</a>
+            <a href="#" class="nav-item" data-section="profile"><span>👤</span> Profile</a>
+            <a href="#" class="nav-item" data-section="settings"><span>⚙️</span> Settings</a>
+        </div>
+        <div class="sidebar-footer">
+            <a href="../index.html" class="nav-item" style="color:var(--color-danger)"><span>🚪</span> Logout</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header">
+            <div class="header-left">
+                <button class="menu-toggle" id="menu-toggle">☰</button>
+                <div class="header-title">Security Portal</div>
+            </div>
+            <div class="header-right">
+                <div class="user-profile-sm">
+                    <div class="avatar" id="headerAvatar">RK</div>
+                    <span id="headerName">Ramesh Kumar</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- DASHBOARD -->
+        <div id="section-dashboard" class="section-content dashboard-content">
+            <div class="dashboard-header">
+                <h2>Welcome, <span id="welcomeName">Ramesh</span> 👋</h2>
+                <p>Main Gate Security checkpoint — manage exits and returns.</p>
+            </div>
+            <div class="grid-cards">
+                <div class="glass-card stat-card">
+                    <div class="stat-icon" style="background-color:var(--color-success-light);color:var(--color-success)">✓</div>
+                    <div class="stat-content"><h4>Approved Outpasses</h4><div class="stat-value" id="statApproved">0</div></div>
+                </div>
+                <div class="glass-card stat-card">
+                    <div class="stat-icon" style="background-color:var(--color-info-light);color:var(--color-info)">🚪</div>
+                    <div class="stat-content"><h4>Currently Outside</h4><div class="stat-value" id="statActive">0</div></div>
+                </div>
+                <div class="glass-card stat-card">
+                    <div class="stat-icon" style="background-color:var(--color-danger-light);color:var(--color-danger)">⚠️</div>
+                    <div class="stat-content"><h4>Late Returns</h4><div class="stat-value" id="statLate">0</div></div>
+                </div>
+            </div>
+            <div class="grid-2-col" style="grid-template-columns:1fr 2fr">
+                <div class="glass-panel" style="text-align:center">
+                    <h3>Quick QR Verify</h3>
+                    <div style="background:var(--color-background);border:2px dashed var(--color-border);border-radius:var(--radius-lg);min-height:200px;display:flex;align-items:center;justify-content:center;margin:var(--spacing-md) 0;flex-direction:column;gap:var(--spacing-sm);overflow:hidden">
+                        <video id="quickQrVideo" playsinline muted style="display:none;width:100%;max-height:260px;object-fit:cover"></video>
+                        <p id="quickQrStatus" role="status" style="color:var(--color-text-muted)">Start the camera to scan an approved outpass QR code.</p>
+                    </div>
+                    <button class="btn btn-secondary btn-block" id="quickQrStart" onclick="startQrCamera('quickQrVideo','quickQrStatus','quickQrStart')">Start Camera</button>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="manualOpId" placeholder="Enter Outpass ID or QR token...">
+                    </div>
+                    <button class="btn btn-primary btn-block" onclick="verifyOutpass()">Verify Outpass</button>
+                </div>
+                <div class="glass-panel">
+                    <h3>Approved Outpasses (Ready for Exit/Return)</h3>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead><tr><th>Student / Room</th><th>Outpass ID</th><th>Destination</th><th>Action</th></tr></thead>
+                            <tbody id="activeTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- QR VERIFICATION -->
+        <div id="section-qrverify" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header"><h2>QR Verification</h2><p>Verify and process outpass exit/return at the gate.</p></div>
+            <div style="max-width:500px;margin:0 auto">
+                <div class="glass-panel" style="text-align:center">
+                    <div style="background:var(--color-background);border:2px dashed var(--color-border);border-radius:var(--radius-lg);min-height:280px;display:flex;align-items:center;justify-content:center;margin:var(--spacing-md) 0;flex-direction:column;gap:var(--spacing-sm);overflow:hidden">
+                        <video id="verifyQrVideo" playsinline muted style="display:none;width:100%;max-height:320px;object-fit:cover"></video>
+                        <p id="verifyQrStatus" role="status" style="color:var(--color-text-muted)">Start the camera to scan an approved outpass QR code.</p>
+                    </div>
+                    <button class="btn btn-primary btn-block" id="verifyQrStart" onclick="startQrCamera('verifyQrVideo','verifyQrStatus','verifyQrStart')">Start Camera</button>
+                    <p style="text-align:center;color:var(--color-text-muted);font-size:0.875rem;margin-bottom:var(--spacing-md)">— OR —</p>
+                    <div class="form-group">
+                        <label class="form-label">Enter Outpass ID Manually</label>
+                        <input type="text" class="form-control" id="qrManualId" placeholder="Enter Outpass ID or QR token">
+                    </div>
+                    <button class="btn btn-primary btn-block" onclick="verifyOutpassFromSection()">Verify &amp; Process</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTIVE OUTPASSES -->
+        <div id="section-active" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header"><h2>Active Outpasses</h2><p>Students currently outside the hostel.</p></div>
+            <div class="glass-panel">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead><tr><th>Student</th><th>Room</th><th>Outpass ID</th><th>Destination</th><th>Exit Time</th><th>Expected Return</th><th>Action</th></tr></thead>
+                        <tbody id="activeOutpassesBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXIT RECORDS -->
+        <div id="section-exitrecords" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header"><h2>Exit Records</h2><p>Log of all student exits through the gate.</p></div>
+            <div class="glass-panel">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead><tr><th>Student</th><th>Outpass ID</th><th>Destination</th><th>Exit Time</th><th>Status</th></tr></thead>
+                        <tbody id="exitRecordsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- RETURN RECORDS -->
+        <div id="section-returnrecords" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header"><h2>Return Records</h2><p>Log of all student returns through the gate.</p></div>
+            <div class="glass-panel">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead><tr><th>Student</th><th>Outpass ID</th><th>Return Time</th><th>On Time?</th></tr></thead>
+                        <tbody id="returnRecordsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- LATE RETURNS -->
+        <div id="section-latereturns" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header"><h2>Late Returns</h2><p>Students who returned late from outpass.</p></div>
+            <div class="glass-panel">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead><tr><th>Student</th><th>Outpass ID</th><th>Expected Return</th><th>Actual Return</th><th>Status</th></tr></thead>
+                        <tbody id="lateReturnsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROFILE -->
+        <div id="section-profile" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header"><h2>My Profile</h2><p>Your security personnel information.</p></div>
+            <div style="max-width:500px">
+                <div class="glass-panel">
+                    <div style="display:flex;align-items:center;gap:var(--spacing-lg);margin-bottom:var(--spacing-xl)">
+                        <div class="avatar" style="width:80px;height:80px;font-size:2rem" id="profileAvatar">RK</div>
+                        <div><h3 id="profileName" style="margin-bottom:0.25rem">Ramesh Kumar</h3><p style="margin:0;color:var(--color-text-muted)" id="profileId">SEC001</p></div>
+                    </div>
+                    <p><strong>Name:</strong> <span id="pProfName">Ramesh Kumar</span></p>
+                    <p><strong>Security ID:</strong> <span id="pProfId">SEC001</span></p>
+                    <p><strong>Location:</strong> <span id="pProfLocation">Main Gate</span></p>
+                    <hr style="border:0;border-top:1px solid rgba(0,0,0,0.1);margin:var(--spacing-md) 0">
+                    <p>Profile information is read-only. Contact the administrator to correct official details.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div id="section-settings" class="section-content dashboard-content" style="display:none">
+            <div class="dashboard-header"><h2>Settings</h2><p>Manage your account preferences.</p></div>
+            <div class="grid-2-col">
+                <div class="glass-panel">
+                    <h3>Alert Preferences</h3>
+                    <div style="margin-top:var(--spacing-md);display:flex;flex-direction:column;gap:var(--spacing-md)">
+                        <label style="display:flex;align-items:center;gap:var(--spacing-sm);cursor:pointer"><input type="checkbox" checked style="width:16px;height:16px"> Late Return Alerts</label>
+                        <label style="display:flex;align-items:center;gap:var(--spacing-sm);cursor:pointer"><input type="checkbox" checked style="width:16px;height:16px"> Invalid QR Alerts</label>
+                        <label style="display:flex;align-items:center;gap:var(--spacing-sm);cursor:pointer"><input type="checkbox" style="width:16px;height:16px"> Sound Alerts</label>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top:var(--spacing-lg)" onclick="alert('Settings saved!')">Save Settings</button>
+                </div>
+                <div class="glass-panel">
+                    <h3>Account Security</h3>
+                    <p>Keep your account secure.</p>
+                    <button class="btn btn-secondary" onclick="alert('Password change coming soon.')">Change Password</button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Verification Modal -->
+<div class="modal-backdrop" id="verifyModal">
+    <div class="modal">
+        <div class="modal-header"><h3>Outpass Verification</h3><button class="modal-close">&times;</button></div>
+        <div class="modal-body">
+            <div id="verifyStatus" style="text-align:center;margin-bottom:var(--spacing-md);padding:var(--spacing-md);border-radius:var(--radius-md)"></div>
+            <div id="verifyDetails"></div>
+        </div>
+        <div class="modal-footer" id="verifyFooter"></div>
+    </div>
+</div>
+
+<script src="../js/auth-guard.js"></script>
+<script src="../js/demo-data.js"></script>
+<script src="../js/outpass.js"></script>
+<script src="../js/sections.js"></script>
+<script src="../js/main.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        loadSecurityData();
+        loadDashboardStats();
+        loadActiveOutpasses();
+        initSections(sectionId => {
+            stopQrCamera();
+            if (sectionId === 'active') loadActiveSection();
+            if (sectionId === 'exitrecords') loadExitRecords();
+            if (sectionId === 'returnrecords') loadReturnRecords();
+            if (sectionId === 'latereturns') loadLateReturns();
+        });
+    });
+
+    function loadSecurityData() {
+        const db = window.HMS_DB.get();
+        const sec = db.security[0];
+        if (!sec) return;
+        document.getElementById('headerName').textContent = sec.name;
+        document.getElementById('welcomeName').textContent = sec.name.split(' ')[0];
+        const initials = sec.name.split(' ').map(n => n[0]).join('').substring(0,2);
+        document.getElementById('headerAvatar').textContent = initials;
+        document.getElementById('profileAvatar').textContent = initials;
+        document.getElementById('profileName').textContent = sec.name;
+        document.getElementById('profileId').textContent = sec.id;
+        document.getElementById('pProfName').textContent = sec.name;
+        document.getElementById('pProfId').textContent = sec.id;
+        document.getElementById('pProfLocation').textContent = sec.location;
+    }
+
+    function loadDashboardStats() {
+        const db = window.HMS_DB.get();
+        const approved = db.outpasses.filter(o => o.qrStatus === 'AVAILABLE').length;
+        const active = db.outpasses.filter(o => o.finalStatus === 'ACTIVE').length;
+        const late = db.outpasses.filter(o => o.lateReturn).length;
+        document.getElementById('statApproved').textContent = approved;
+        document.getElementById('statActive').textContent = active;
+        document.getElementById('statLate').textContent = late;
+    }
+
+    function loadActiveOutpasses() {
+        const db = window.HMS_DB.get();
+        const outpasses = db.outpasses.filter(o => o.qrStatus === 'AVAILABLE' || o.finalStatus === 'ACTIVE');
+        const tbody = document.getElementById('activeTableBody');
+        tbody.innerHTML = '';
+        if (outpasses.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--color-text-muted)">No approved outpasses found.</td></tr>'; return; }
+        outpasses.forEach(op => {
+            const student = db.students.find(s => s.id === op.studentId);
+            const isExit = op.finalStatus !== 'ACTIVE';
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td><strong>${student ? student.name : op.studentId}</strong><br><span style="font-size:0.75rem">Room: ${student ? student.room : ''}</span></td><td>${op.id}</td><td>${op.destination}</td><td><button class="btn btn-secondary btn-sm" onclick="checkOutpass('${op.id}')">${isExit ? '🚪 Record Exit' : '🔙 Record Return'}</button></td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function loadActiveSection() {
+        const db = window.HMS_DB.get();
+        const active = db.outpasses.filter(o => o.finalStatus === 'ACTIVE');
+        const tbody = document.getElementById('activeOutpassesBody');
+        tbody.innerHTML = '';
+        if (active.length === 0) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--color-text-muted)">No students currently outside.</td></tr>'; return; }
+        active.forEach(op => {
+            const student = db.students.find(s => s.id === op.studentId);
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td><strong>${student ? student.name : op.studentId}</strong></td><td>${student ? student.room : 'N/A'}</td><td>${op.id}</td><td>${op.destination}</td><td>${op.exitTime ? formatDate(op.exitTime) : 'N/A'}</td><td>${formatDate(op.returnDate)}</td><td><button class="btn btn-primary btn-sm" onclick="checkOutpass('${op.id}')">🔙 Record Return</button></td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function loadExitRecords() {
+        const db = window.HMS_DB.get();
+        const exits = db.outpasses.filter(o => o.exitTime);
+        const tbody = document.getElementById('exitRecordsBody');
+        tbody.innerHTML = '';
+        if (exits.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--color-text-muted)">No exit records found.</td></tr>'; return; }
+        exits.sort((a,b) => new Date(b.exitTime) - new Date(a.exitTime)).forEach(op => {
+            const student = db.students.find(s => s.id === op.studentId);
+            const state = calculateOutpassState(op);
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td><strong>${student ? student.name : op.studentId}</strong></td><td>${op.id}</td><td>${op.destination}</td><td>${formatDate(op.exitTime)}</td><td><span class="badge ${state.status === 'ACTIVE' ? 'badge-info' : 'badge-success'}">${state.status === 'ACTIVE' ? 'Outside' : 'Returned'}</span></td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function loadReturnRecords() {
+        const db = window.HMS_DB.get();
+        const returns = db.outpasses.filter(o => o.returnTime);
+        const tbody = document.getElementById('returnRecordsBody');
+        tbody.innerHTML = '';
+        if (returns.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--color-text-muted)">No return records found.</td></tr>'; return; }
+        returns.sort((a,b) => new Date(b.returnTime) - new Date(a.returnTime)).forEach(op => {
+            const student = db.students.find(s => s.id === op.studentId);
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td><strong>${student ? student.name : op.studentId}</strong></td><td>${op.id}</td><td>${formatDate(op.returnTime)}</td><td><span class="badge ${op.lateReturn ? 'badge-danger' : 'badge-success'}">${op.lateReturn ? '⚠️ LATE' : '✓ On Time'}</span></td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function loadLateReturns() {
+        const db = window.HMS_DB.get();
+        const lateOps = db.outpasses.filter(o => o.lateReturn);
+        const tbody = document.getElementById('lateReturnsBody');
+        tbody.innerHTML = '';
+        if (lateOps.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--color-text-muted)">No late returns recorded.</td></tr>'; return; }
+        lateOps.forEach(op => {
+            const student = db.students.find(s => s.id === op.studentId);
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td><strong>${student ? student.name : op.studentId}</strong></td><td>${op.id}</td><td>${formatDate(op.returnDate)}</td><td>${formatDate(op.returnTime)}</td><td><span class="badge badge-danger">LATE</span></td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    let qrCameraStream = null;
+    let qrCameraTimer = null;
+    let qrCameraGeneration = 0;
+    let qrCameraElements = null;
+
+    async function startQrCamera(videoId, statusId, buttonId) {
+        if (qrCameraStream && qrCameraElements && qrCameraElements.videoId === videoId) {
+            stopQrCamera();
+            return;
+        }
+        stopQrCamera();
+        const video = document.getElementById(videoId);
+        const status = document.getElementById(statusId);
+        const button = document.getElementById(buttonId);
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            status.textContent = 'Camera access requires a secure connection (HTTPS or localhost). Use manual outpass entry below.';
+            return;
+        }
+        if (typeof window.BarcodeDetector !== 'function') {
+            status.textContent = 'This browser does not support QR scanning. Use manual outpass entry below.';
+            return;
+        }
+        try {
+            const detector = new BarcodeDetector({ formats: ['qr_code'] });
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
+            qrCameraStream = stream;
+            qrCameraElements = { videoId, statusId, buttonId };
+            video.srcObject = stream;
+            video.style.display = 'block';
+            status.style.display = 'none';
+            button.textContent = 'Stop Camera';
+            await video.play();
+            const generation = ++qrCameraGeneration;
+            const scan = async () => {
+                if (generation !== qrCameraGeneration || !qrCameraStream) return;
+                if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+                    try {
+                        const codes = await detector.detect(video);
+                        if (codes.length && codes[0].rawValue) {
+                            const decoded = codes[0].rawValue.trim();
+                            stopQrCamera();
+                            checkOutpass(decoded);
+                            return;
+                        }
+                    } catch (scanError) {
+                        console.warn('QR scan attempt failed:', scanError);
+                    }
+                }
+                qrCameraTimer = window.setTimeout(scan, 180);
+            };
+            scan();
+        } catch (error) {
+            stopQrCamera();
+            status.style.display = 'block';
+            status.textContent = error.name === 'NotAllowedError'
+                ? 'Camera permission was denied. Allow camera access in the browser, then try again or enter the outpass ID manually.'
+                : error.name === 'NotFoundError'
+                    ? 'No camera was found. Enter the outpass ID manually.'
+                    : 'Unable to start the camera. Check browser permissions or enter the outpass ID manually.';
+            console.error('Unable to start QR camera:', error);
+        }
+    }
+
+    function stopQrCamera() {
+        qrCameraGeneration++;
+        if (qrCameraTimer) window.clearTimeout(qrCameraTimer);
+        qrCameraTimer = null;
+        if (qrCameraStream) qrCameraStream.getTracks().forEach(track => track.stop());
+        qrCameraStream = null;
+        if (qrCameraElements) {
+            const video = document.getElementById(qrCameraElements.videoId);
+            const status = document.getElementById(qrCameraElements.statusId);
+            const button = document.getElementById(qrCameraElements.buttonId);
+            if (video) { video.pause(); video.srcObject = null; video.style.display = 'none'; }
+            if (status) { status.style.display = 'block'; status.textContent = 'Camera stopped. Start it again to scan, or enter the outpass ID manually.'; }
+            if (button) button.textContent = 'Start Camera';
+        }
+        qrCameraElements = null;
+    }
+
+    function verifyOutpass() {
+        const id = document.getElementById('manualOpId').value.trim();
+        if (!id) { alert('Please enter an Outpass ID'); return; }
+        checkOutpass(id);
+    }
+
+    function verifyOutpassFromSection() {
+        const id = document.getElementById('qrManualId').value.trim();
+        if (!id) { alert('Please enter an Outpass ID'); return; }
+        checkOutpass(id);
+    }
+
+    function checkOutpass(id) {
+        const db = window.HMS_DB.get();
+        const op = db.outpasses.find(o => o.id === id || o.qrToken === id);
+        const statusDiv = document.getElementById('verifyStatus');
+        const detailsDiv = document.getElementById('verifyDetails');
+        const footer = document.getElementById('verifyFooter');
+
+        if (!op) {
+            statusDiv.style.cssText = 'text-align:center;margin-bottom:1rem;padding:1rem;border-radius:0.5rem;background:var(--color-danger-light);color:var(--color-danger)';
+            statusDiv.innerHTML = '<h2>❌ INVALID OUTPASS</h2><p>Record not found in system.</p>';
+            detailsDiv.innerHTML = '';
+            footer.innerHTML = `<button class="btn btn-secondary" onclick="closeModal('verifyModal')">Close</button>`;
+            openModal('verifyModal');
+            return;
+        }
+
+        const state = calculateOutpassState(op);
+        const student = db.students.find(s => s.id === op.studentId);
+
+        if (state.qrLock && state.status !== 'ACTIVE') {
+            statusDiv.style.cssText = 'text-align:center;margin-bottom:1rem;padding:1rem;border-radius:0.5rem;background:var(--color-danger-light);color:var(--color-danger)';
+            statusDiv.innerHTML = '<h2>🔒 QR NOT AVAILABLE</h2><p>This outpass is not fully approved yet.</p>';
+            detailsDiv.innerHTML = `<p>Current Status: <strong>${state.display}</strong></p>`;
+            footer.innerHTML = `<button class="btn btn-secondary" onclick="closeModal('verifyModal')">Close</button>`;
+        } else if (state.status === 'COMPLETED' || state.status === 'EXPIRED') {
+            statusDiv.style.cssText = 'text-align:center;margin-bottom:1rem;padding:1rem;border-radius:0.5rem;background:var(--color-danger-light);color:var(--color-danger)';
+            statusDiv.innerHTML = '<h2>⏰ OUTPASS EXPIRED</h2><p>This outpass is no longer valid.</p>';
+            detailsDiv.innerHTML = '';
+            footer.innerHTML = `<button class="btn btn-secondary" onclick="closeModal('verifyModal')">Close</button>`;
+        } else {
+            statusDiv.style.cssText = 'text-align:center;margin-bottom:1rem;padding:1rem;border-radius:0.5rem;background:var(--color-success-light);color:var(--color-success)';
+            statusDiv.innerHTML = '<h2>✅ VALID OUTPASS</h2><p>Ready for processing.</p>';
+            detailsDiv.innerHTML = `
+                <div style="background:var(--color-background);padding:0.5rem;border-radius:0.5rem;margin-bottom:1rem">
+                    <p style="margin-bottom:0.25rem"><strong>Student:</strong> ${student ? student.name : op.studentId}</p>
+                    <p style="margin-bottom:0"><strong>Room:</strong> ${student ? student.room : 'N/A'}</p>
+                </div>
+                <p><strong>Destination:</strong> ${op.destination}</p>
+                <p><strong>Departure:</strong> ${formatDate(op.departureDate)}</p>
+                <p><strong>Expected Return:</strong> ${formatDate(op.returnDate)}</p>`;
+            if (op.finalStatus === 'ACTIVE') {
+                footer.innerHTML = `<button class="btn btn-secondary" onclick="closeModal('verifyModal')">Cancel</button><button class="btn btn-primary" onclick="recordMovement('${op.id}', 'RETURN')">🔙 Record Return</button>`;
+            } else {
+                footer.innerHTML = `<button class="btn btn-secondary" onclick="closeModal('verifyModal')">Cancel</button><button class="btn btn-primary" onclick="recordMovement('${op.id}', 'EXIT')">🚪 Record Exit</button>`;
+            }
+        }
+        openModal('verifyModal');
+    }
+
+    function recordMovement(id, type) {
+        const db = window.HMS_DB.get();
+        const idx = db.outpasses.findIndex(o => o.id === id);
+        if (idx !== -1) {
+            const now = new Date().toISOString();
+            if (type === 'EXIT') {
+                db.outpasses[idx].finalStatus = 'ACTIVE';
+                db.outpasses[idx].exitTime = now;
+                alert('Exit recorded successfully.');
+            } else if (type === 'RETURN') {
+                db.outpasses[idx].finalStatus = 'COMPLETED';
+                db.outpasses[idx].returnTime = now;
+                const returnDate = new Date(db.outpasses[idx].returnDate);
+                if (new Date(now) > returnDate) {
+                    db.outpasses[idx].lateReturn = true;
+                    db.notifications.push({ id: Date.now(), userId: 'WAR001', title: 'Late Return Warning', message: `Student returned late on outpass ${id}.`, date: now, read: false });
+                    alert('Return recorded. ⚠️ Student returned LATE!');
+                } else {
+                    alert('Return recorded successfully.');
+                }
+            }
+            window.HMS_DB.save(db);
+            closeModal('verifyModal');
+            document.getElementById('manualOpId').value = '';
+            loadDashboardStats();
+            loadActiveOutpasses();
+        }
+    }
+</script>
+</body>
+</html>
