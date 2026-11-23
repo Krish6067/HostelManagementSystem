@@ -1,0 +1,30 @@
+{
+  "listeners": [
+    {
+      "address": "0.0.0.0",
+      "port": 8080,
+      "ssl": false
+    }
+  ],
+  "db_clients": {
+    "default": {
+      "host": "127.0.0.1",
+      "port": 3306,
+      "database": "hostel_management",
+      "username": "hms_user",
+      "password": "change_this_password",
+      "charset": "utf8mb4",
+      "idle_timeout": 60,
+      "max_connections": 10,
+      "auto_batch": true,
+      "is_fast": false
+    }
+  },
+  "log_path": "log",
+  "log_level": "INFO",
+  "enable_logging": true,
+  "plugins": [],
+  "threads_num": 4,
+  "use_ssl": false,
+  "max_connection_num": 5000
+}
