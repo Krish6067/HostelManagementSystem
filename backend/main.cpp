@@ -1,32 +1,53 @@
-#include "AuthController.h"
-#include "../middleware/AuthMiddleware.h"
-#include "../middleware/RoleMiddleware.h"
+
+#include <drogon/drogon.h>
+#include "controllers/AuthController.h"
+#include "middleware/AuthMiddleware.h"
+#include <cstdlib>
+#include <string>
 
 int main()
 {
-    // Register controllers
-    drogon::app().registerController(std::make_shared<AuthController>());
+    // Register authentication controller
+    drogon::app().registerController(
+        std::make_shared<AuthController>()
+    );
 
-    // Register global authentication middleware (skip login/refresh routes)
-    drogon::app().registerPreHandler([](const drogon::HttpRequestPtr &req,
-                                      std::function<void(const drogon::HttpResponsePtr &)> &&callback) {
-        // paths that do not require auth
-        std::string path = req->path();
-        if (path == "/api/auth/login" || path == "/api/auth/refresh") {
-            callback(drogon::HttpResponse::newHttpResponse());
-            return;
+    // Public authentication routes
+    drogon::app().registerPreRoutingAdvice(
+        [](const drogon::HttpRequestPtr &req,
+           drogon::AdviceCallback &&callback,
+           drogon::AdviceChainCallback &&chainCallback)
+        {
+            const std::string path = req->path();
+
+            if (path == "/api/auth/login" ||
+                path == "/api/auth/refresh" ||
+                path == "/api/health")
+            {
+                chainCallback();
+                return;
+            }
+
+            AuthMiddleware::instance()->doFilter(
+                req,
+                std::move(callback)
+            );
         }
-        // invoke AuthMiddleware
-        AuthMiddleware::instance()->doFilter(req, std::move(callback));
-    });
+    );
 
-    // Load configuration from config.json (placed in the working directory)
-    // Drogon will automatically read config.json if present.
-    // Register health controller (route already defined in the controller class)
+    // Load database and other configuration
+    drogon::app().loadConfigFile("config.json");
+
+    // Render provides PORT at runtime
+    const char *portEnv = std::getenv("PORT");
+    const uint16_t port = portEnv
+        ? static_cast<uint16_t>(std::stoi(portEnv))
+        : 8080;
+
+    // Listen on Render's assigned port
     drogon::app()
-        .loadConfigFile("config.json")
-        .addListener("0.0.0.0", 8080) // default port, can be changed in config.json
+        .addListener("0.0.0.0", port)
         .run();
+
     return 0;
 }
-
